@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const EditorPane(title: 'Flutter UI Editor'),
+      home: EditorPane(title: 'Flutter Draw'),
     );
   }
 }
