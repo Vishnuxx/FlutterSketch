@@ -26,11 +26,12 @@ class PaletteWidget extends StatelessWidget {
     if (this.isDraggable) {
       return Draggable(
         child: getWidget(),
-        feedback: Container(
-          height: 40,
-          width: 200,
-          color: Colors.amber,
-        ),
+        feedback: getWidget(),
+        // Container(
+        //   height: 40,
+        //   width: 200,
+        //   color: Colors.amber,
+        // ),
        onDragStarted: this.onDragStart,
        onDragUpdate: this.onDragMove,
        onDragCompleted: this.onDragCompleted ,
@@ -43,7 +44,7 @@ class PaletteWidget extends StatelessWidget {
 
   Widget getWidget() {
     return Container(
-      width: double.infinity,
+      width: 150.0,
       height: 40.0,
       margin: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
       decoration: BoxDecoration(
@@ -72,7 +73,7 @@ class PaletteWidget extends StatelessWidget {
             child: null,
           ),
           Expanded(
-              child: Text(this.label, overflow: TextOverflow.ellipsis))
+              child: Center(child: Text(this.label , style: TextStyle(fontSize: 15 , color: Colors.black54) , overflow: TextOverflow.ellipsis)))
         ],
       ),
     );
