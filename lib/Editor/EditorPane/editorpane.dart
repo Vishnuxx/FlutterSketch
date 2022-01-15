@@ -27,6 +27,7 @@ class _EditorPaneState extends State<EditorPane> {
 
   List<Widget> widgets = [];
   Widget? currentDraggingWidget;
+  List<Widget> hiddenWidgets = [];
 
   var key = GlobalKey();
 
@@ -131,7 +132,9 @@ class _EditorPaneState extends State<EditorPane> {
   Widget controlPane() {
     return Container(
       width: WIDGETS_CONROLLER_PANEL_W,
-      child: currentDraggingWidget,
+      child: Column(
+        children: hiddenWidgets,
+      ),
     );
   }
 
@@ -169,12 +172,10 @@ class _EditorPaneState extends State<EditorPane> {
         ],
       ),
       onTap: () {
-      
-          selectionIndicatior.setVisibility(true);
-          (txt as TextWidget)
-              .set("text", "this is sel ejh ejshe selected \n ihihd\n");
-          selectionIndicatior.selectWidget(txt);
-      
+        selectionIndicatior.setVisibility(true);
+        (txt as TextWidget)
+            .set("text", "this is sel ejh ejshe selected \n ihihd\n");
+        selectionIndicatior.selectWidget(txt);
       },
     );
 
@@ -188,21 +189,25 @@ class _EditorPaneState extends State<EditorPane> {
     void dragStart() {
       setState(() {
         currentDraggingWidget = draggable;
+        widgets.remove(draggable as Widget);
+        hiddenWidgets.add(currentDraggingWidget!);
       });
-      
-      widgets.remove(currentDraggingWidget! as Widget);
-      print(widgets[widgets.length - 1] == currentDraggingWidget);
-      selectionIndicatior.selectWidget(draggable!);
-      selectionIndicatior.setVisibility(false);
+      try {
+        debugPrint(
+            (widgets[widgets.length - 1] == currentDraggingWidget).toString());
+        selectionIndicatior.selectWidget(draggable!);
+        selectionIndicatior.setVisibility(false);
+      } catch (e) {
+        //   print("_______________");
+      }
     }
 
     void dragMove(DragUpdateDetails details) {
-      
       for (Widget wid in widgets) {
         if (DragUtils.hitTest(details.globalPosition, wid)) {
           selectionIndicatior.selectWidget(wid);
           selectionIndicatior.setVisibility(true);
-          debugPrint("selected");
+        
         } else {
           selectionIndicatior.setVisibility(true);
         }
@@ -210,9 +215,13 @@ class _EditorPaneState extends State<EditorPane> {
     }
 
     void drop() {
-      widgets.insert(widgets.indexOf(widgets.last), currentDraggingWidget!);
+      setState(() {
+      hiddenWidgets.remove(currentDraggingWidget!);
+      widgets.add(currentDraggingWidget!);
       selectionIndicatior.setVisibility(true);
       selectionIndicatior.selectWidget(currentDraggingWidget!);
+      });
+     
     }
 
     draggable = Draggable(
@@ -223,7 +232,7 @@ class _EditorPaneState extends State<EditorPane> {
           dragStart();
         },
         onDragUpdate: (DragUpdateDetails details) {
-           print(details.globalPosition.toString());
+          print(details.globalPosition.toString());
           dragMove(details);
         },
         onDragEnd: (DraggableDetails) {
