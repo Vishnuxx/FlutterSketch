@@ -1,15 +1,21 @@
+/* 
+
+FlutterSketchWidget is the SuperClass of the widgets 
+that are being dragged and dropped in the canvas
+
+*/
+
 import 'package:flutter/material.dart';
 
-class FlutterSketchWidget extends StatefulWidget {
-  FlutterSketchWidget({Key? key}) : super(key: key);
-
-  @override
-  _FlutterSketchWidgetState createState() => _FlutterSketchWidgetState();
-}
-
-class _FlutterSketchWidgetState extends State<FlutterSketchWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
+class FlutterSketchInterface {
+  Map getProperties() {
+    return Map();
   }
 }
+
+// class Example {
+//   bool isViewGroup;
+//   bool isMultiChilded;
+//   List<Widget> children;
+
+// }

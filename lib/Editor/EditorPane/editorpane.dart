@@ -1,6 +1,8 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 import 'package:flutteruibuilder/Palette/Widgets/text_widget.dart';
 import 'package:flutteruibuilder/Palette/palette_widget.dart';
@@ -22,7 +24,9 @@ class _EditorPaneState extends State<EditorPane> {
   final double SCREEN_H = 550;
 
   SelectionIndicatior selectionIndicatior = SelectionIndicatior();
+
   List<Widget> widgets = [];
+  Widget? currentDraggingWidget;
 
   var key = GlobalKey();
 
@@ -48,7 +52,7 @@ class _EditorPaneState extends State<EditorPane> {
     return Container(
       width: WIDGETS_PANEL_W,
       color: const Color(0xffffffff),
-      child: ListView(
+      child: Column(
         children: [
           label("Widgets"),
           draggablePallette("Text"),
@@ -75,7 +79,7 @@ class _EditorPaneState extends State<EditorPane> {
       child: Center(
         child: Text(
           name,
-          style: TextStyle(color: Colors.blue , fontSize: 20),
+          style: TextStyle(color: Colors.blue, fontSize: 20),
         ),
       ),
     );
@@ -85,8 +89,41 @@ class _EditorPaneState extends State<EditorPane> {
   Widget canvasPanel() {
     return Expanded(
       flex: 4,
-      child: Container(
-          color: const Color(0xffEDECEC), child: Center(child: editorPane())),
+      child: GestureDetector(
+        onTap: () => selectionIndicatior.setVisibility(false),
+        child: Container(
+            color: const Color(0xffEDECEC), child: Center(child: editorPane())),
+      ),
+    );
+  }
+
+  //drop zone
+  Widget editorPane() {
+    return SizedBox(
+      width: SCREEN_W,
+      height: SCREEN_H,
+      child: droppable(),
+    );
+  }
+
+//drop zone area
+  Widget droppable() {
+    return DragTarget(
+      builder: (BuildContext con, List<Object?> l, List<dynamic> d) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("New Flutter Project"),
+          ),
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+            child: Column(
+              children: widgets,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -94,6 +131,7 @@ class _EditorPaneState extends State<EditorPane> {
   Widget controlPane() {
     return Container(
       width: WIDGETS_CONROLLER_PANEL_W,
+      child: currentDraggingWidget,
     );
   }
 
@@ -115,56 +153,83 @@ class _EditorPaneState extends State<EditorPane> {
     );
   }
 
-//drop zone
-  Widget editorPane() {
-    return SizedBox(
-      width: SCREEN_W,
-      height: SCREEN_H,
-      child: droppable(),
-    );
-  }
-
-//drop zone area
-  Widget droppable() {
-    return DragTarget(
-      builder: (BuildContext con, List<Object?> l, List<dynamic> d) {
-        return MaterialApp(
-            home: Scaffold(
-          // appBar: AppBar(
-          //   title: Text("New Flutter Project"),
-          // ),
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.white,
-            child: Column(
-              children: widgets,
-            ),
-          ),
-        ));
-      },
-    );
-  }
-
+//this widget is generated everytime when user drags widget from pallette
   Widget sampleWidget() {
-    Widget txt = TextWidget(key: GlobalKey());
+    Widget? draggable = null;
+
+    Widget txt = TextWidget(
+      key: GlobalKey(),
+    );
     Widget widget =
         Container(key: GlobalKey(), color: Colors.amber, child: txt);
-    return GestureDetector(
+    Widget view = GestureDetector(
       child: Wrap(
         children: [
           widget,
         ],
       ),
       onTap: () {
-        try {
-          (txt as TextWidget).set("text", "this is sel ejh ejshe selected \n ihihd\n");
+      
+          selectionIndicatior.setVisibility(true);
+          (txt as TextWidget)
+              .set("text", "this is sel ejh ejshe selected \n ihihd\n");
           selectionIndicatior.selectWidget(txt);
-          
-        } catch (e) {
-          print(e.toString());
-        }
+      
       },
     );
+
+    Widget feedback = Container(
+        key: GlobalKey(),
+        color: Colors.amber,
+        width: 200,
+        height: 60,
+        clipBehavior: Clip.none);
+
+    void dragStart() {
+      setState(() {
+        currentDraggingWidget = draggable;
+      });
+      
+      widgets.remove(currentDraggingWidget! as Widget);
+      print(widgets[widgets.length - 1] == currentDraggingWidget);
+      selectionIndicatior.selectWidget(draggable!);
+      selectionIndicatior.setVisibility(false);
+    }
+
+    void dragMove(DragUpdateDetails details) {
+      
+      for (Widget wid in widgets) {
+        if (DragUtils.hitTest(details.globalPosition, wid)) {
+          selectionIndicatior.selectWidget(wid);
+          selectionIndicatior.setVisibility(true);
+          debugPrint("selected");
+        } else {
+          selectionIndicatior.setVisibility(true);
+        }
+      }
+    }
+
+    void drop() {
+      widgets.insert(widgets.indexOf(widgets.last), currentDraggingWidget!);
+      selectionIndicatior.setVisibility(true);
+      selectionIndicatior.selectWidget(currentDraggingWidget!);
+    }
+
+    draggable = Draggable(
+        key: GlobalKey(),
+        child: view,
+        feedback: feedback,
+        onDragStarted: () {
+          dragStart();
+        },
+        onDragUpdate: (DragUpdateDetails details) {
+           print(details.globalPosition.toString());
+          dragMove(details);
+        },
+        onDragEnd: (DraggableDetails) {
+          drop();
+        });
+
+    return draggable;
   }
 }
