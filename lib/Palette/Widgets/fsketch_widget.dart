@@ -5,7 +5,6 @@ that are being dragged and dropped in the canvas
 
 */
 
-import 'package:flutter/material.dart';
 
 abstract class FlutterSketchWidget {
   bool? isMultiChilded;

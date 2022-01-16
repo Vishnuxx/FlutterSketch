@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class SelectionIndicatior extends StatefulWidget {
   final _state = _SelectionIndicatiorState();
   Widget? _widget;
@@ -16,6 +17,7 @@ class SelectionIndicatior extends StatefulWidget {
 
   //set only one property at a time
   void set(String key, value) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _map[key] = value;
     });
@@ -23,6 +25,7 @@ class SelectionIndicatior extends StatefulWidget {
 
   //sets multiple properties at a time
   void setProperties(Map map) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       for (dynamic key in map.keys) {
         _map[key] = map[key];
@@ -31,6 +34,7 @@ class SelectionIndicatior extends StatefulWidget {
   }
 
   void setVisibility(bool isvisible) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _isVisible = isvisible;
       _map = _map;
@@ -44,10 +48,10 @@ class SelectionIndicatior extends StatefulWidget {
       final RenderBox box = (widget.key as GlobalKey)
           .currentContext
           ?.findRenderObject() as RenderBox;
-      final translation = box.getTransformTo(null).getTranslation();
       final offset = Offset(dx, dy);
       final position = box.localToGlobal(offset);
 
+      // ignore: invalid_use_of_protected_member
       _state.setState(() {
         _map["width"] = box.size.width;
         _map["height"] = box.size.height;
@@ -63,6 +67,7 @@ class SelectionIndicatior extends StatefulWidget {
   }
 
   @override
+  // ignore: no_logic_in_create_state
   _SelectionIndicatiorState createState() => _state;
 }
 
@@ -80,7 +85,7 @@ class _SelectionIndicatiorState extends State<SelectionIndicatior> {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(
-                  color: Color(0x0ffDE0085),
+                  color: const Color(0xffde0085),
                   width: 2,
                 ),
               ),
