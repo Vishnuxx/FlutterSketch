@@ -1,19 +1,18 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
-import 'package:flutteruibuilder/Palette/Widgets/text_widget.dart';
+import 'package:flutteruibuilder/Palette/fsketch_widget.dart';
+import 'package:flutteruibuilder/Palette/Widgets/fs_text.dart';
 import 'package:flutteruibuilder/Palette/palette_widget.dart';
 
 // ignore: must_be_immutable
 class EditorPane extends StatefulWidget {
-  EditorPane({Key? key, required this.title}) : super(key: key);
+  final state = _EditorPaneState();
 
-  final String title;
-
-   // ignore: constant_identifier_names
+  // ignore: constant_identifier_names
   static const double WIDGETS_PANEL_W = 150;
-   // ignore: constant_identifier_names
+  // ignore: constant_identifier_names
   static const double WIDGETS_CONROLLER_PANEL_W = 200;
   // ignore: constant_identifier_names
   static const double SCREEN_W = 300;
@@ -23,17 +22,26 @@ class EditorPane extends StatefulWidget {
   List<Widget> widgets = [];
   SelectionIndicatior selectionIndicatior = SelectionIndicatior();
   Widget? currentDraggingWidget;
-   
+
   Widget? dummyBox; //dummy widget is used to indicate the  droppable region
   List<Widget> hiddenWidgets = [];
 
+  WidgetsPalletteList pallettelist = WidgetsPalletteList();
+
+  EditorPane({Key? key}) : super(key: key);
+
+  void setState(Function callback) {
+    // ignore: invalid_use_of_protected_member
+    state.setState(() {
+      callback();
+    });
+  }
+
   @override
-  State<EditorPane> createState() => _EditorPaneState();
+  State<EditorPane> createState() => state;
 }
 
 class _EditorPaneState extends State<EditorPane> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +81,8 @@ class _EditorPaneState extends State<EditorPane> {
       child: Column(
         children: [
           label("Widgets"),
-          draggablePallette("Text"),
-          draggablePallette("Button"),
+          draggablePallette("TextWidget"),
+          draggablePallette("Container"),
           draggablePallette("IconButton"),
           draggablePallette("Imageview"),
           draggablePallette("progress bar"),
@@ -128,18 +136,18 @@ class _EditorPaneState extends State<EditorPane> {
   Widget droppable() {
     return DragTarget(
       builder: (BuildContext con, List<Object?> l, List<dynamic> d) {
-        return  Scaffold(
-            appBar: AppBar(
-              title: const Text("New Flutter Project"),
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("New Flutter Project"),
+          ),
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+            child: Column(
+              children: widget.widgets,
             ),
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white,
-              child: Column(
-                children: widget.widgets,
-              ),
-            ),
+          ),
         );
       },
     );
@@ -147,7 +155,8 @@ class _EditorPaneState extends State<EditorPane> {
 
 //pane to show widget controls
   Widget controlPane() {
-    return const SizedBox(width: EditorPane.WIDGETS_CONROLLER_PANEL_W, child: null);
+    return const SizedBox(
+        width: EditorPane.WIDGETS_CONROLLER_PANEL_W, child: null);
   }
 
 //pallette widgets
@@ -158,37 +167,30 @@ class _EditorPaneState extends State<EditorPane> {
       onDragCompleted: () {
         setState(() {
           try {
-            widget.widgets.add(sampleWidget());
-            //print((widgets[0] as TextWidget).props["text"]);
-          } on Exception {
-            debugPrint("added");
-          }
+            widget.widgets.add(sampleWidget(label));
+          } on Exception {}
         });
       },
     );
   }
 
 //this widget is generated everytime when user drags widget from pallette
-  Widget sampleWidget() {
-    Widget? draggable;  //main widget
+  Widget sampleWidget(String type) {
+    Widget? draggable; //main widget
 
-    Widget txt = TextWidget(  //widget which we want to build
-      key: GlobalKey(),
-    );
+    // Widget txt = TextWidget(
+    //   //widget which we want to build
+    //   key: GlobalKey(),
+    // );
 
-     Widget containerBox =
-        Container(key: GlobalKey(), color: Colors.amber, child: txt);
+    Widget? txt = widget.pallettelist.generateWidget(type , GlobalKey());
+
+    Widget containerBox = Container(color: Colors.amber, child: IgnorePointer(child: txt));
 
     Widget view = GestureDetector(
-      child: Wrap(
-        children: [
-          containerBox,
-        ],
-      ),
+      child: containerBox,
       onTap: () {
         widget.selectionIndicatior.setVisibility(true);
-        (txt as TextWidget)
-            .set("text", "this widget is selected \n ihihd\n");
         widget.selectionIndicatior.selectWidget(txt);
       },
     );
@@ -206,14 +208,8 @@ class _EditorPaneState extends State<EditorPane> {
         widget.widgets.remove(draggable as Widget);
         widget.hiddenWidgets.add(widget.currentDraggingWidget!);
       });
-      try {
-        debugPrint(
-            (widget.widgets[widget.widgets.length - 1] == widget.currentDraggingWidget).toString());
-        widget.selectionIndicatior.selectWidget(draggable!);
-        widget.selectionIndicatior.setVisibility(false);
-      } catch (e) {
-        //   print("_______________");
-      }
+      widget.selectionIndicatior.selectWidget(draggable!);
+      widget.selectionIndicatior.setVisibility(false);
     }
 
     void dragMove(DragUpdateDetails details) {
@@ -238,7 +234,7 @@ class _EditorPaneState extends State<EditorPane> {
 
     draggable = Draggable(
         key: GlobalKey(),
-        child: view,
+        child: view ,
         feedback: feedback,
         onDragStarted: () {
           dragStart();
@@ -248,7 +244,11 @@ class _EditorPaneState extends State<EditorPane> {
           dragMove(details);
         },
         onDragEnd: (details) {
-          drop();
+          try {
+            drop();
+          } catch (e) {
+            print("drop: " + e.toString());
+          }
         });
 
     return draggable;

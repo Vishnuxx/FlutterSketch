@@ -42,22 +42,26 @@ class SelectionIndicatior extends StatefulWidget {
   }
 
   //if visible, then highlihts the selected widget
-  void selectWidget(Widget widget, {double dx = 0, double dy = 0}) {
-    if (_isVisible) {
-      _widget = widget;
-      final RenderBox box = (widget.key as GlobalKey)
-          .currentContext
-          ?.findRenderObject() as RenderBox;
-      final offset = Offset(dx, dy);
-      final position = box.localToGlobal(offset);
+  void selectWidget(Widget? widget, {double dx = 0, double dy = 0}) {
+    try {
+      if (_isVisible && widget != null) {
+        _widget = widget;
+        final RenderBox box = (widget.key as GlobalKey)
+            .currentContext
+            ?.findRenderObject() as RenderBox;
+        final offset = Offset(dx, dy);
+        final position = box.localToGlobal(offset);
 
-      // ignore: invalid_use_of_protected_member
-      _state.setState(() {
-        _map["width"] = box.size.width;
-        _map["height"] = box.size.height;
-        _map["x"] = position.dx;
-        _map["y"] = position.dy;
-      });
+        // ignore: invalid_use_of_protected_member
+        _state.setState(() {
+          _map["width"] = box.size.width;
+          _map["height"] = box.size.height;
+          _map["x"] = position.dx;
+          _map["y"] = position.dy;
+        });
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 
