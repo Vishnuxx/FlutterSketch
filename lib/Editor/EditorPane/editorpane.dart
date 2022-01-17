@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 import 'package:flutteruibuilder/Palette/fsketch_widget.dart';
 import 'package:flutteruibuilder/Palette/Widgets/fs_text.dart';
 import 'package:flutteruibuilder/Palette/palette_widget.dart';
+import 'package:flutteruibuilder/Palette/widget_controller.dart';
 
 // ignore: must_be_immutable
 class EditorPane extends StatefulWidget {
@@ -155,8 +157,12 @@ class _EditorPaneState extends State<EditorPane> {
 
 //pane to show widget controls
   Widget controlPane() {
-    return const SizedBox(
-        width: EditorPane.WIDGETS_CONROLLER_PANEL_W, child: null);
+    return  SizedBox(
+        width: EditorPane.WIDGETS_CONROLLER_PANEL_W, child: Column(children: [
+          WidgetController("Text" , controllers: [
+              Text("this is sample text")
+          ],)
+        ],));
   }
 
 //pallette widgets
