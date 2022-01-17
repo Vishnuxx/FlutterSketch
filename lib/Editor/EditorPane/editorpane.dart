@@ -83,19 +83,19 @@ class _EditorPaneState extends State<EditorPane> {
       child: Column(
         children: [
           label("Widgets"),
-          draggablePallette("TextWidget"),
-          draggablePallette("Container"),
-          draggablePallette("IconButton"),
-          draggablePallette("Imageview"),
-          draggablePallette("progress bar"),
-          draggablePallette("seekbar"),
-          draggablePallette("padding"),
-          draggablePallette("sizedbox"),
+          draggablePallette("TextWidget" , "/pallette_icons/text.png"),
+          draggablePallette("Container" , "/pallette_icons/container.png"),
+          draggablePallette("IconButton" , "/pallette_icons/iconbutton.png"),
+          draggablePallette("Imageview" , "/pallette_icons/icon1.png"),
+          draggablePallette("progress bar" , "/pallette_icons/icon1.png"),
+          draggablePallette("seekbar" , "/pallette_icons/icon1.png"),
+          draggablePallette("padding" , "/pallette_icons/icon1.png"),
+          draggablePallette("sizedbox" , "/pallette_icons/icon1.png"),
           label("Layouts"),
-          draggablePallette("Row"),
-          draggablePallette("Column"),
-          draggablePallette("Container"),
-          draggablePallette("Wrap"),
+          draggablePallette("Row" , "/pallette_icons/icon1.png"),
+          draggablePallette("Column" , "/pallette_icons/icon1.png"),
+          draggablePallette("Container" , "/pallette_icons/icon1.png"),
+          draggablePallette("Wrap" , "/pallette_icons/icon1.png"),
         ],
       ),
     );
@@ -157,18 +157,23 @@ class _EditorPaneState extends State<EditorPane> {
 
 //pane to show widget controls
   Widget controlPane() {
-    return  SizedBox(
-        width: EditorPane.WIDGETS_CONROLLER_PANEL_W, child: Column(children: [
-          WidgetController("Text" , controllers: [
-              Text("this is sample text")
-          ],)
-        ],));
+    return SizedBox(
+        width: EditorPane.WIDGETS_CONROLLER_PANEL_W,
+        child: Column(
+          children: [
+            WidgetController(
+              "Text",
+              controllers: [Text("this is sample text")],
+            )
+          ],
+        ));
   }
 
 //pallette widgets
-  Widget draggablePallette(String label) {
+  Widget draggablePallette(String label, String imgsrc) {
     return PaletteWidget(
       isDraggable: true,
+      path: imgsrc,
       label: label,
       onDragCompleted: () {
         setState(() {
@@ -189,9 +194,10 @@ class _EditorPaneState extends State<EditorPane> {
     //   key: GlobalKey(),
     // );
 
-    Widget? txt = widget.pallettelist.generateWidget(type , GlobalKey());
+    Widget? txt = widget.pallettelist.generateWidget(type, GlobalKey());
 
-    Widget containerBox = Container(color: Colors.amber, child: IgnorePointer(child: txt));
+    Widget containerBox =
+        Container(color: Colors.amber, child: IgnorePointer(child: txt));
 
     Widget view = GestureDetector(
       child: containerBox,
@@ -240,7 +246,7 @@ class _EditorPaneState extends State<EditorPane> {
 
     draggable = Draggable(
         key: GlobalKey(),
-        child: view ,
+        child: view,
         feedback: feedback,
         onDragStarted: () {
           dragStart();
