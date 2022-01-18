@@ -4,10 +4,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Palette/Widgets/fs_container.dart';
-import 'package:flutteruibuilder/Palette/Widgets/fs_iconbutton.dart';
-import 'package:flutteruibuilder/Palette/fsketch_widget.dart';
-import 'package:flutteruibuilder/Palette/Widgets/fs_text.dart';
+import 'package:flutteruibuilder/Widgets/fs_container.dart';
+import 'package:flutteruibuilder/Widgets/fs_iconbutton.dart';
+import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Widgets/fs_text.dart';
 
 class WidgetsPalletteList {
   final Map<String, Widget> _widgets = {};
@@ -26,7 +26,7 @@ class WidgetsPalletteList {
 
   //always call with a new keyword to avoid calling by reference
   // ignore: empty_constructor_bodies
-  Widget? generateWidget(String type, GlobalKey key) {
+  FlutterSketchWidget? generateWidget(String type, GlobalKey key) {
     switch (type) {
       case "TextWidget":
         return FSText(key: key);

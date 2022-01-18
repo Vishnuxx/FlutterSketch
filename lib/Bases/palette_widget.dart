@@ -46,14 +46,14 @@ class PaletteWidget extends StatelessWidget {
     return Container(
       width: 150.0,
       height: 40.0,
-      margin: const EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
+      margin: const EdgeInsets.only(left: 0, top: 2, right: 0, bottom: 2),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
-          border: Border.all(
-            color: Colors.black12,
-            width: 1,
-          ),
-          color: Colors.white30),
+          borderRadius: BorderRadius.circular(5),
+          // border: Border.all(
+          //   color: Colors.black12,
+          //   width: 1,
+          // ),
+          color: Colors.white54),
       clipBehavior: Clip.hardEdge,
       child: Row(
         children: [
@@ -73,7 +73,7 @@ class PaletteWidget extends StatelessWidget {
             child: null,
           ),
           Expanded(
-              child: Center(child: Text(label , style: const TextStyle(fontSize: 15 , color: Colors.black54) , overflow: TextOverflow.ellipsis)))
+              child: Text(label , style: const TextStyle(fontSize: 12 , color: Colors.black54) , overflow: TextOverflow.ellipsis))
         ],
       ),
     );

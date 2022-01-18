@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 
 // ignore: must_be_immutable
 class SelectionIndicatior extends StatefulWidget {
@@ -42,7 +44,7 @@ class SelectionIndicatior extends StatefulWidget {
   }
 
   //if visible, then highlihts the selected widget
-  void selectWidget(Widget? widget, {double dx = 0, double dy = 0}) {
+  void selectWidget(CanvasWidget? widget, {double dx = 0, double dy = 0}) {
     try {
       if (_isVisible && widget != null) {
         _widget = widget;
@@ -61,7 +63,7 @@ class SelectionIndicatior extends StatefulWidget {
         });
       }
     } catch (e) {
-      print(e.toString());
+      print("selectWidget : " + e.toString());
     }
   }
 

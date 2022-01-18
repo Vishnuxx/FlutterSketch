@@ -9,8 +9,9 @@ class WidgetController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title , style: TextStyle(color: Colors.blue , fontSize: 10),),
+        Text(title , style: TextStyle(color: Colors.blue , fontSize: 15),),
         ...?controllers,
       ],
     );
