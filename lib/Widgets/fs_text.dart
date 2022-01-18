@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 
 // ignore: must_be_immutable
@@ -54,7 +55,7 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   }
 
   @override
-  List<Widget>? children;
+  List<CanvasWidget>? children;
 
 
     @override

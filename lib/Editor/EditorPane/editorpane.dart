@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Editor/device_selectorUI.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/drag_utils.dart';

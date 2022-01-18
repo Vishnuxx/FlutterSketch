@@ -6,6 +6,7 @@ that are being dragged and dropped in the canvas
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 
 abstract class FlutterSketchWidget extends Widget {
   State? _state;  //state of the widget
@@ -16,7 +17,7 @@ abstract class FlutterSketchWidget extends Widget {
 
   bool? isMultiChilded; //checks if it can hold multiple children
   bool? isViewGroup; //checks if it can hold n number of children
-  List<Widget>? children; //list of children it can hold
+  List<CanvasWidget>? children; //list of children it can hold
 
   void set(String property , dynamic value); //used to access and edit properties of the widget in realtime
 

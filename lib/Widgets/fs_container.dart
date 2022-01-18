@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 
 class FSContainer extends StatefulWidget implements FlutterSketchWidget {
@@ -14,7 +15,7 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   _FSContainerState createState() => _state as _FSContainerState;
 
   @override
-  List<Widget>? children;
+  List<CanvasWidget>? children;
 
   @override
   String? classname;
