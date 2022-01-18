@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
 // ignore: must_be_immutable
 class FSText extends StatefulWidget implements FlutterSketchWidget {
-  
-  
-  @override
+  String? classname;
+
+  String? id;
+
+  bool? isMultiChilded;
+
+  bool? isViewGroup;
+
+  List<WidgetController>? controllers;
+
   Map _props = {
     "key": GlobalKey(),
     "name": "text",
@@ -16,11 +25,29 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
 
   FSText({Key? key}) : super(key: key) {
     _props["name"] = "hello";
+    _initControllers();
+  }
+
+  void _initControllers() {
+    controllers = [
+      WidgetController(
+        "text",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["text"].toString()),
+            onChanged: (value) {
+              _state.setState(() {
+                _props["text"] = value;
+              });
+            },
+          )
+        ],
+      )
+    ];
   }
 
   @override
   State _state = _FSTextState();
-
 
   @override
   void set(String property, dynamic value) {
@@ -29,18 +56,6 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
       _props[property] = value;
     });
   }
-
-  @override
-  String? classname;
-
-  @override
-  String? id;
-
-  @override
-  bool? isMultiChilded;
-
-  @override
-  bool? isViewGroup;
 
   @override
   Map getProperties() {
@@ -55,10 +70,9 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   }
 
   @override
-  List<CanvasWidget>? children;
+  List<CanvasWidget>? children = [];
 
-
-    @override
+  @override
   // ignore: no_logic_in_create_state
   _FSTextState createState() => _state as _FSTextState;
 }

@@ -46,7 +46,7 @@ class SelectionIndicatior extends StatefulWidget {
   //if visible, then highlihts the selected widget
   void selectWidget(CanvasWidget? widget, {double dx = 0, double dy = 0}) {
     try {
-      if (_isVisible && widget != null) {
+      if (widget != null) {
         _widget = widget;
         final RenderBox box = (widget.key as GlobalKey)
             .currentContext

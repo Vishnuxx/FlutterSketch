@@ -1,15 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
 class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   @override
   State _state = _FSContainerState();
 
   @override
-  Map _props = {"width": 200, "height": 100 , "color" : Colors.blue};
+  Map _props = {"width": 200, "height": 100, "color": Colors.blue};
 
-  FSContainer({Key? key}) : super(key: key);
+  FSContainer({Key? key}) : super(key: key) {
+    _initControllers();
+  }
+
+  void _initControllers() {
+    controllers = [
+      WidgetController(
+        "width",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["width"].toString()),
+            onChanged: (value) {
+              _state.setState(() {
+                _props["width"] = double.parse(value);
+              });
+            },
+          )
+        ],
+      ),
+
+       WidgetController(
+        "height",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["height"].toString()),
+            onChanged: (value) {
+              _state.setState(() {
+                _props["height"] = double.parse(value);
+              });
+            },
+          )
+        ],
+      )
+    ];
+  }
 
   @override
   _FSContainerState createState() => _state as _FSContainerState;
@@ -47,6 +83,9 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
     // TODO: implement toDataObject
     throw UnimplementedError();
   }
+
+  @override
+  List<WidgetController>? controllers;
 }
 
 class _FSContainerState extends State<FSContainer> {

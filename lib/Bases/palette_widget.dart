@@ -1,3 +1,6 @@
+/* 
+    pallette widget is the sample widget seen on the left side of the editor
+ */
 
 import 'package:flutter/material.dart';
 

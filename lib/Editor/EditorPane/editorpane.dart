@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Controls/controls_pane.dart';
 import 'package:flutteruibuilder/Editor/device_selectorUI.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/drag_utils.dart';
@@ -46,6 +47,8 @@ class EditorPane extends StatefulWidget {
 }
 
 class _EditorPaneState extends State<EditorPane> {
+  List<WidgetController>? controllers = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,8 +60,8 @@ class _EditorPaneState extends State<EditorPane> {
         Row(children: [widgetPanel(), canvasPanel(), controlPane()]),
         widget.selectionIndicatior,
         SizedBox(
-            width: 100,
-            height: 100,
+            width: 0,
+            height: 0,
             child: Column(
               children: widget.hiddenWidgets,
             )), //used to store widgets temporarily
@@ -120,7 +123,13 @@ class _EditorPaneState extends State<EditorPane> {
     return Expanded(
       flex: 4,
       child: GestureDetector(
-        onTap: () => widget.selectionIndicatior.setVisibility(false),
+        onTap: () {
+          setState(() {
+            controllers = null;
+          });
+
+          widget.selectionIndicatior.setVisibility(false);
+        },
         child: Container(
             color: const Color(0xffEDECEC), child: Center(child: editorPane())),
       ),
@@ -159,31 +168,16 @@ class _EditorPaneState extends State<EditorPane> {
 
 //pane to show widget controls
   Widget controlPane() {
-    return SizedBox(
-        width: EditorPane.WIDGETS_CONROLLER_PANEL_W,
-        child: Container(
-          padding: EdgeInsets.all(5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              WidgetController(
-                "Text",
-                controllers: [
-                  TextField(
-                    onChanged: (value) {
-                      try {
-                        (widget.currentDraggingWidget as FlutterSketchWidget)
-                            .set("text", value);
-                      } catch (e) {
-                        print("k : " + e.toString());
-                      }
-                    },
-                  )
-                ],
-              )
-            ],
-          ),
-        ));
+    return ControlsPane(
+      padding: 5,
+      width: EditorPane.WIDGETS_CONROLLER_PANEL_W,
+      children: [
+        WidgetController(
+          "Text",
+          controllers: controllers,
+        )
+      ],
+    );
   }
 
 //pallette widgets
@@ -290,41 +284,43 @@ class _EditorPaneState extends State<EditorPane> {
 
     cWidget = CanvasWidget(
       type,
-      WidgetsPalletteList().generateWidget(type , GlobalKey()),
+      WidgetsPalletteList().generateWidget(type, GlobalKey()),
       key: GlobalKey(),
       onSelect: (FlutterSketchWidget fsw) {
-        widget.selectionIndicatior.setVisibility(true);
-        widget.selectionIndicatior.selectWidget(cWidget);
+        setState(() {
+          widget.selectionIndicatior.setVisibility(true);
+          widget.selectionIndicatior.selectWidget(cWidget);
+          controllers = null;
+          controllers = cWidget!.widget!.controllers!;
+        });
       },
       dragStart: () {
         setState(() {
           widget.currentDraggingWidget = cWidget;
-          widget.hiddenWidgets.add(widget.currentDraggingWidget!);
           widget.widgets.remove(widget.currentDraggingWidget!);
+          widget.hiddenWidgets.add(widget.currentDraggingWidget!);
+
+          widget.selectionIndicatior.selectWidget(cWidget);
+          widget.selectionIndicatior.setVisibility(false);
         });
-        widget.selectionIndicatior.selectWidget(cWidget);
-        widget.selectionIndicatior.setVisibility(false);
-      
       },
       dragMove: (details) {
-          for (CanvasWidget wid in widget.widgets) {
+        for (CanvasWidget wid in widget.widgets) {
           if (DragUtils.hitTest(details.globalPosition, wid)) {
             widget.selectionIndicatior.selectWidget(wid);
             widget.selectionIndicatior.setVisibility(true);
           } else {
-            widget.selectionIndicatior.setVisibility(false);
+            widget.selectionIndicatior.setVisibility(true);
           }
         }
-      
       },
       dragEnd: (details) {
         setState(() {
           widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
           widget.widgets.add(widget.currentDraggingWidget!);
         });
-          widget.selectionIndicatior.setVisibility(true);
-          widget.selectionIndicatior
-              .selectWidget(widget.currentDraggingWidget!);
+        widget.selectionIndicatior.setVisibility(true);
+        widget.selectionIndicatior.selectWidget(widget.currentDraggingWidget!);
         print("end");
       },
     );

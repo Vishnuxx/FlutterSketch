@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ControllerPane extends StatelessWidget {
+class ControlsPane extends StatelessWidget {
   double? width = 0;
   double? padding = 0;
   List<Widget> ?children;
 
-  ControllerPane({Key? key, this.width, this.children}) : super(key: key);
+  ControlsPane({Key? key, this.padding , this.width, this.children}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

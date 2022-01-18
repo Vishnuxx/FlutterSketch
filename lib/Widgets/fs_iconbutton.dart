@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
 class FSIconButton extends StatefulWidget implements FlutterSketchWidget {
   @override
@@ -47,6 +49,9 @@ class FSIconButton extends StatefulWidget implements FlutterSketchWidget {
     // TODO: implement toDataObject
     throw UnimplementedError();
   }
+
+  @override
+  List<WidgetController>? controllers;
 }
 
 class _FSIconButtonState extends State<FSIconButton> {
