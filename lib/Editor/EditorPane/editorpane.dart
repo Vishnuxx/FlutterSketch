@@ -142,12 +142,12 @@ class _EditorPaneState extends State<EditorPane> {
     return SizedBox(
       width: EditorPane.SCREEN_W,
       height: EditorPane.SCREEN_H,
-      child: droppable(),
+      child: deviceScreen(),
     );
   }
 
 //drop zone area
-  Widget droppable() {
+  Widget deviceScreen() {
     return DragTarget(
       builder: (BuildContext con, List<Object?> l, List<dynamic> d) {
         return Scaffold(
