@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
-import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
 // ignore: must_be_immutable
 class FSText extends StatefulWidget implements FlutterSketchWidget {
+  @override
   String? classname;
 
+  @override
   String? id;
 
+  @override
   bool? isMultiChilded;
 
+  @override
   bool? isViewGroup;
 
+  @override
   List<WidgetController>? controllers;
 
-  Map _props = {
+  final Map _props = {
     "key": GlobalKey(),
     "name": "text",
     "text": "textview",
@@ -36,6 +40,7 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
           TextField(
             controller: TextEditingController(text: _props["text"].toString()),
             onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
               _state.setState(() {
                 _props["text"] = value;
               });
@@ -46,8 +51,7 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
     ];
   }
 
-  @override
-  State _state = _FSTextState();
+  final State _state = _FSTextState();
 
   @override
   void set(String property, dynamic value) {
@@ -59,15 +63,13 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   Map getProperties() {
+    // ignore: todo
     // TODO: implement getProperties
     throw UnimplementedError();
   }
 
   @override
-  Object toDataObject() {
-    // TODO: implement toDataObject
-    throw UnimplementedError();
-  }
+  Object toDataObject() => throw UnimplementedError();
 
   @override
   List<CanvasWidget>? children = [];

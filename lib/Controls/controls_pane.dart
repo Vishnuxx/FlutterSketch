@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ControlsPane extends StatelessWidget {
   double? width = 0;
   double? padding = 0;

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
-import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
+// ignore: must_be_immutable
 class FSContainer extends StatefulWidget implements FlutterSketchWidget {
-  @override
-  State _state = _FSContainerState();
+  final State _state = _FSContainerState();
 
-  @override
-  Map _props = {"width": 200, "height": 100, "color": Colors.blue};
+  final Map _props = {"width": 200, "height": 100, "color": const Color(0xff3FC5FF)};
 
   FSContainer({Key? key}) : super(key: key) {
     _initControllers();
@@ -23,6 +21,7 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
           TextField(
             controller: TextEditingController(text: _props["width"].toString()),
             onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
               _state.setState(() {
                 _props["width"] = double.parse(value);
               });
@@ -30,15 +29,30 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
           )
         ],
       ),
-
-       WidgetController(
+      WidgetController(
         "height",
         controllers: [
           TextField(
-            controller: TextEditingController(text: _props["height"].toString()),
+            controller:
+                TextEditingController(text: _props["height"].toString()),
             onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
               _state.setState(() {
                 _props["height"] = double.parse(value);
+              });
+            },
+          )
+        ],
+      ),
+      WidgetController(
+        "Color",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["color"].toString()),
+            onSubmitted: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["color"] = Color(int.parse("0xff"+ ((value).toString()).replaceAll('#', "")))  ;
               });
             },
           )
@@ -48,6 +62,7 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   }
 
   @override
+  // ignore: no_logic_in_create_state
   _FSContainerState createState() => _state as _FSContainerState;
 
   @override
@@ -66,23 +81,18 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   bool? isViewGroup;
 
   @override
-  Map getProperties() {
-    // TODO: implement getProperties
-    throw UnimplementedError();
-  }
+  Map getProperties() => throw UnimplementedError();
 
   @override
   void set(String property, dynamic value) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _props[property] = value;
     });
   }
 
   @override
-  Object toDataObject() {
-    // TODO: implement toDataObject
-    throw UnimplementedError();
-  }
+  Object toDataObject() => throw UnimplementedError();
 
   @override
   List<WidgetController>? controllers;

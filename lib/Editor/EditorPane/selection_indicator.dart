@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
-import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 
 // ignore: must_be_immutable
 class SelectionIndicatior extends StatefulWidget {
@@ -45,7 +44,6 @@ class SelectionIndicatior extends StatefulWidget {
 
   //if visible, then highlihts the selected widget
   void selectWidget(CanvasWidget? widget, {double dx = 0, double dy = 0}) {
-    try {
       if (widget != null) {
         _widget = widget;
         final RenderBox box = (widget.key as GlobalKey)
@@ -62,9 +60,6 @@ class SelectionIndicatior extends StatefulWidget {
           _map["y"] = position.dy;
         });
       }
-    } catch (e) {
-      print("selectWidget : " + e.toString());
-    }
   }
 
   //returns the selected widget
@@ -91,8 +86,8 @@ class _SelectionIndicatiorState extends State<SelectionIndicatior> {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(
-                  color: const Color(0xffde0085),
-                  width: 2,
+                  color: const Color(0xffFF00B8),
+                  width: 3,
                 ),
               ),
             ),

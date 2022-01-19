@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 
+// ignore: must_be_immutable
 class CanvasWidget extends StatelessWidget {
   String? type;
 
@@ -19,9 +19,7 @@ class CanvasWidget extends StatelessWidget {
     this.dragStart, 
     this.dragMove, 
     this.dragEnd
-    }) : super(key: key) {
-  
-  }
+    }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +30,7 @@ class CanvasWidget extends StatelessWidget {
               color: Colors.amber, child: IgnorePointer(child: widget!)),
           onTap: () => onSelect!(widget!),
         ),
-        feedback: Container(
-            key: GlobalKey(),
-            color: Colors.amber,
-            width: 200,
-            height: 60,
-            clipBehavior: Clip.none),
+        feedback: Container(),
         onDragStarted: () => dragStart!(),
         onDragUpdate: dragMove,
         onDragEnd: dragEnd);

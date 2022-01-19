@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Controls/controls_pane.dart';
-import 'package:flutteruibuilder/Editor/device_selectorUI.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
-import 'package:flutteruibuilder/Widgets/fs_text.dart';
 import 'package:flutteruibuilder/Bases/palette_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
@@ -43,11 +41,13 @@ class EditorPane extends StatefulWidget {
   }
 
   @override
+  // ignore: no_logic_in_create_state
   State<EditorPane> createState() => state;
 }
 
 class _EditorPaneState extends State<EditorPane> {
   List<WidgetController>? controllers = [];
+  DragShadow shadow = DragShadow();
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +65,7 @@ class _EditorPaneState extends State<EditorPane> {
             child: Column(
               children: widget.hiddenWidgets,
             )), //used to store widgets temporarily
+        shadow
       ],
     ));
   }
@@ -85,7 +86,7 @@ class _EditorPaneState extends State<EditorPane> {
     return Container(
       width: EditorPane.WIDGETS_PANEL_W,
       color: const Color(0xffEDECEC),
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: ListView(
         children: [
           label("Widgets"),
@@ -110,7 +111,7 @@ class _EditorPaneState extends State<EditorPane> {
   Widget label(String name) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Text(
         name,
         style: const TextStyle(color: Colors.blue, fontSize: 15),
@@ -192,6 +193,7 @@ class _EditorPaneState extends State<EditorPane> {
             var a = canvasWidget(label); //sampleWidget(label);
             widget.widgets.add(a);
             widget.currentDraggingWidget = a;
+            // ignore: empty_catches
           } on Exception {}
         });
       },
@@ -305,23 +307,26 @@ class _EditorPaneState extends State<EditorPane> {
         });
       },
       dragMove: (details) {
+        shadow.setVisibility(true);
+        shadow.setPosition(details);
         for (CanvasWidget wid in widget.widgets) {
           if (DragUtils.hitTest(details.globalPosition, wid)) {
             widget.selectionIndicatior.selectWidget(wid);
             widget.selectionIndicatior.setVisibility(true);
+            break;
           } else {
-            widget.selectionIndicatior.setVisibility(true);
+            widget.selectionIndicatior.setVisibility(false);
           }
         }
       },
       dragEnd: (details) {
+        shadow.setVisibility(false);
         setState(() {
           widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
           widget.widgets.add(widget.currentDraggingWidget!);
         });
         widget.selectionIndicatior.setVisibility(true);
         widget.selectionIndicatior.selectWidget(widget.currentDraggingWidget!);
-        print("end");
       },
     );
 

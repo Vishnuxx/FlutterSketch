@@ -35,19 +35,7 @@ class WidgetsPalletteList {
 
       case "IconButton":
         return FSIconButton(key: key,);
-
-      case "":
-        break;
-
-      case "":
-        break;
-
-      case "":
-        break;
-
-      case "":
-        break;
-
+        
       default:
         break;
     }
