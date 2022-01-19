@@ -18,9 +18,9 @@ class EditorPane extends StatefulWidget {
   // ignore: constant_identifier_names
   static const double WIDGETS_CONROLLER_PANEL_W = 250;
   // ignore: constant_identifier_names
-  static  double SCREEN_W = 300;
+  static double SCREEN_W = 300;
   // ignore: constant_identifier_names
-  static  double SCREEN_H = 550;
+  static double SCREEN_H = 550;
 
   List<CanvasWidget> widgets = [];
   SelectionIndicatior selectionIndicatior = SelectionIndicatior();
@@ -148,24 +148,25 @@ class _EditorPaneState extends State<EditorPane> {
 
 //drop zone area
   Widget deviceScreen() {
-    return DragTarget(
-      builder: (BuildContext con, List<Object?> l, List<dynamic> d) {
-        return MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              title: const Text("New Flutter Project"),
-            ),
-            body: Container(
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("New Flutter Project"),
+        ),
+        body: DragTarget(
+          builder: (context, candidateData, rejectedData) {
+            return Container(
               width: double.infinity,
               height: double.infinity,
               color: Colors.white,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: widget.widgets,
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -180,18 +181,17 @@ class _EditorPaneState extends State<EditorPane> {
               TextEditingController(text: EditorPane.SCREEN_W.toString()),
           onSubmitted: (value) {
             setState(() {
-               EditorPane.SCREEN_W = double.parse(value);
+              EditorPane.SCREEN_W = double.parse(value);
             });
-           
           },
         ),
         TextField(
           controller:
               TextEditingController(text: EditorPane.SCREEN_H.toString()),
-               onSubmitted: (value) {
-                 setState(() {
-                    EditorPane.SCREEN_H = double.parse(value);
-                 });
+          onSubmitted: (value) {
+            setState(() {
+              EditorPane.SCREEN_H = double.parse(value);
+            });
           },
         ),
         WidgetController(
@@ -318,10 +318,12 @@ class _EditorPaneState extends State<EditorPane> {
         });
       },
       dragStart: () {
+        shadow.setSizeOf(cWidget!);
         setState(() {
           widget.currentDraggingWidget = cWidget;
           widget.widgets.remove(widget.currentDraggingWidget!);
           widget.hiddenWidgets.add(widget.currentDraggingWidget!);
+          controllers = null;
 
           widget.selectionIndicatior.selectWidget(cWidget);
           widget.selectionIndicatior.setVisibility(false);
@@ -346,8 +348,9 @@ class _EditorPaneState extends State<EditorPane> {
           widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
           widget.widgets.add(widget.currentDraggingWidget!);
         });
-        widget.selectionIndicatior.setVisibility(true);
-        widget.selectionIndicatior.selectWidget(widget.currentDraggingWidget!);
+      },
+      dragCompleted: () {
+        widget.selectionIndicatior.setVisibility(false);
       },
     );
 

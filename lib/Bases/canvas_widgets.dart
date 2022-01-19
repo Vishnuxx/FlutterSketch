@@ -11,6 +11,7 @@ class CanvasWidget extends StatelessWidget {
   late void Function()? dragStart;
   late void Function(DragUpdateDetails details)? dragMove;
   late void Function(DraggableDetails details)? dragEnd;
+  late void Function()? dragCompleted;
   CanvasWidget(
     this.type,
     this.widget,
@@ -18,7 +19,8 @@ class CanvasWidget extends StatelessWidget {
     this.onSelect, 
     this.dragStart, 
     this.dragMove, 
-    this.dragEnd
+    this.dragEnd,
+    this.dragCompleted
     }) : super(key: key);
 
   @override
@@ -33,6 +35,8 @@ class CanvasWidget extends StatelessWidget {
         feedback: Container(),
         onDragStarted: () => dragStart!(),
         onDragUpdate: dragMove,
-        onDragEnd: dragEnd);
+        onDragEnd: dragEnd,
+        onDragCompleted: dragCompleted
+        ,);
   }
 }
