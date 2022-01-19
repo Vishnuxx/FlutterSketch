@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
@@ -7,9 +8,25 @@ import 'package:flutteruibuilder/Bases/widget_controller.dart';
 class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   final State _state = _FSContainerState();
 
-  final Map _props = {"width": 200, "height": 100, "color": const Color(0xff3FC5FF)};
+  final Map _props = {
+    "width": 200,
+    "height": 100,
+    "color": const Color(0xff3FC5FF)
+  };
+
+  @override
+  bool? isMultiChilded;
+
+  @override
+  bool? isViewGroup;
+
+  @override
+  CWHolder? children;
 
   FSContainer({Key? key}) : super(key: key) {
+    isMultiChilded = false;
+    isViewGroup = true;
+    children = CWHolder([] , _state as State);
     _initControllers();
   }
 
@@ -52,7 +69,8 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
             onSubmitted: (value) {
               // ignore: invalid_use_of_protected_member
               _state.setState(() {
-                _props["color"] = Color(int.parse("0xff"+ ((value).toString()).replaceAll('#', "")))  ;
+                _props["color"] = Color(int.parse(
+                    "0xff" + ((value).toString()).replaceAll('#', "")));
               });
             },
           )
@@ -64,21 +82,6 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   @override
   // ignore: no_logic_in_create_state
   _FSContainerState createState() => _state as _FSContainerState;
-
-  @override
-  List<CanvasWidget>? children;
-
-  @override
-  String? classname;
-
-  @override
-  String? id;
-
-  @override
-  bool? isMultiChilded;
-
-  @override
-  bool? isViewGroup;
 
   @override
   Map getProperties() => throw UnimplementedError();
@@ -105,6 +108,8 @@ class _FSContainerState extends State<FSContainer> {
       width: double.parse(widget._props["width"].toString()),
       height: double.parse(widget._props["height"].toString()),
       color: widget._props["color"],
+      padding: EdgeInsets.all(10),
+      child: (widget.children!.isNotEmpty())? widget.children!.elementAt(0) : null,
     );
   }
 }

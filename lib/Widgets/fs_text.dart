@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
 // ignore: must_be_immutable
 class FSText extends StatefulWidget implements FlutterSketchWidget {
-  @override
-  String? classname;
-
-  @override
-  String? id;
-
   @override
   bool? isMultiChilded;
 
@@ -20,6 +15,9 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   @override
   List<WidgetController>? controllers;
 
+  @override
+  CWHolder? children;
+
   final Map _props = {
     "key": GlobalKey(),
     "name": "text",
@@ -28,7 +26,9 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   };
 
   FSText({Key? key}) : super(key: key) {
-    _props["name"] = "hello";
+    isMultiChilded = false;
+    isViewGroup = false;
+    children = CWHolder([] , _state as State);;
     _initControllers();
   }
 
@@ -71,8 +71,7 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   @override
   Object toDataObject() => throw UnimplementedError();
 
-  @override
-  List<CanvasWidget>? children = [];
+  
 
   @override
   // ignore: no_logic_in_create_state

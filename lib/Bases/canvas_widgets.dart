@@ -7,7 +7,7 @@ class CanvasWidget extends StatelessWidget {
 
 
   late FlutterSketchWidget? widget;
-  late void Function(FlutterSketchWidget widget)? onSelect;
+  late void Function(TapDownDetails details)? onSelect;
   late void Function()? dragStart;
   late void Function(DragUpdateDetails details)? dragMove;
   late void Function(DraggableDetails details)? dragEnd;
@@ -30,7 +30,7 @@ class CanvasWidget extends StatelessWidget {
         child: GestureDetector(
           child: Container(
               color: Colors.amber, child: IgnorePointer(child: widget!)),
-          onTap: () => onSelect!(widget!),
+          onTapDown: (TapDownDetails details) => onSelect!(details),
         ),
         feedback: Container(),
         onDragStarted: () => dragStart!(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Controls/controls_pane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
@@ -48,13 +49,12 @@ class EditorPane extends StatefulWidget {
 class _EditorPaneState extends State<EditorPane> {
   List<WidgetController>? controllers = [];
   DragShadow shadow = DragShadow();
+  late EditorCanvas canvas;
+  CanvasWidget? dropTarget;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text(widget.title),
-        // ),
         body: Stack(
       children: [
         Row(children: [widgetPanel(), canvasPanel(), controlPane()]),
@@ -155,15 +155,8 @@ class _EditorPaneState extends State<EditorPane> {
         ),
         body: DragTarget(
           builder: (context, candidateData, rejectedData) {
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.widgets,
-              ),
-            );
+            return EditorCanvas(key: GlobalKey(), children: widget.widgets);
+            ;
           },
         ),
       ),
@@ -309,12 +302,20 @@ class _EditorPaneState extends State<EditorPane> {
       type,
       WidgetsPalletteList().generateWidget(type, GlobalKey()),
       key: GlobalKey(),
-      onSelect: (FlutterSketchWidget fsw) {
+      onSelect: (TapDownDetails details) {
         setState(() {
-          widget.selectionIndicatior.setVisibility(true);
-          widget.selectionIndicatior.selectWidget(cWidget);
+          widget.currentDraggingWidget = DragUtils.getTappedWidget(
+                  cWidget! ,
+                  details.globalPosition,
+                  widget.selectionIndicatior,
+                   () {
+            widget.selectionIndicatior.setVisibility(true);
+            widget.selectionIndicatior
+                .selectWidget(cWidget);
+          }, () {});
+
           controllers = null;
-          controllers = cWidget!.widget!.controllers!;
+          controllers = cWidget.widget!.controllers!;
         });
       },
       dragStart: () {
@@ -332,21 +333,48 @@ class _EditorPaneState extends State<EditorPane> {
       dragMove: (details) {
         shadow.setVisibility(true);
         shadow.setPosition(details);
-        for (CanvasWidget wid in widget.widgets) {
-          if (DragUtils.hitTest(details.globalPosition, wid)) {
-            widget.selectionIndicatior.selectWidget(wid);
-            widget.selectionIndicatior.setVisibility(true);
-            break;
-          } else {
-            widget.selectionIndicatior.setVisibility(false);
-          }
-        }
+
+        dropTarget = DragUtils.findCanvasWidget(
+            details.globalPosition, widget.widgets, widget.selectionIndicatior,
+            () {
+          //hasEntered
+
+          widget.selectionIndicatior.selectWidget(dropTarget);
+          widget.selectionIndicatior.setVisibility(true);
+        }, () {
+          //hasNotEntered
+
+          widget.selectionIndicatior.setVisibility(false);
+        });
+
+        // for (CanvasWidget wid in widget.widgets) {
+        //   if (DragUtils.hitTest(details.globalPosition, wid)) {
+        //     widget.selectionIndicatior.selectWidget(wid);
+        //     widget.selectionIndicatior.setVisibility(true);
+        //     break;
+        //   } else {
+        //     widget.selectionIndicatior.setVisibility(false);
+        //   }
+        // }
       },
       dragEnd: (details) {
         shadow.setVisibility(false);
         setState(() {
-          widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
-          widget.widgets.add(widget.currentDraggingWidget!);
+          if (dropTarget != null && dropTarget!.widget!.isViewGroup!) {
+            if (dropTarget!.widget!.isMultiChilded!) {
+              widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
+              dropTarget!.widget!.children!.add(widget.currentDraggingWidget!);
+            } else if (dropTarget!.widget!.children!.isEmpty()) {
+              widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
+              dropTarget!.widget!.children!
+                  .insert(0, widget.currentDraggingWidget!);
+            }
+          } else {
+            widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
+            widget.widgets.add(widget.currentDraggingWidget!);
+          }
+          // widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
+          // widget.widgets.add(widget.currentDraggingWidget!);
         });
       },
       dragCompleted: () {

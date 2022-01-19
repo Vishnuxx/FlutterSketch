@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 
@@ -9,26 +10,27 @@ class FSIconButton extends StatefulWidget implements FlutterSketchWidget {
 
   final Map _props = {"width": 200, "height": 100, "color": Colors.blue};
 
-  FSIconButton({Key? key}) : super(key: key);
+    @override
+  bool? isMultiChilded;
+
+  @override
+  bool? isViewGroup;
+
+  @override
+  CWHolder? children;
+
+  FSIconButton({Key? key}) : super(key: key){
+    isMultiChilded = false;
+    isViewGroup = false;
+    children = CWHolder([] , _state as State);;
+  }
 
   @override
   // ignore: no_logic_in_create_state
   _FSIconButtonState createState() => _state as _FSIconButtonState;
 
-  @override
-  List<CanvasWidget>? children;
 
-  @override
-  String? classname;
-
-  @override
-  String? id;
-
-  @override
-  bool? isMultiChilded;
-
-  @override
-  bool? isViewGroup;
+ 
 
   @override
   Map getProperties() {
