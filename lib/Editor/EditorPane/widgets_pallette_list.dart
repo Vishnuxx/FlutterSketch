@@ -4,6 +4,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Widgets/fs_column.dart';
 import 'package:flutteruibuilder/Widgets/fs_container.dart';
 import 'package:flutteruibuilder/Widgets/fs_iconbutton.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
@@ -35,7 +36,10 @@ class WidgetsPalletteList {
 
       case "IconButton":
         return FSIconButton(key: key,);
-        
+      
+      case "Column":
+        return FSColumn(key: key,);
+
       default:
         break;
     }

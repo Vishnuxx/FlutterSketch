@@ -3,6 +3,7 @@ import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 
 class DragUtils {
@@ -24,75 +25,81 @@ class DragUtils {
 
   static CanvasWidget? findCanvasWidget(
       Offset location,
-      List<CanvasWidget> widgets,
+      Widget widget,
       SelectionIndicatior indicatior,
-      void Function()? hasEntered,
+      void Function(CanvasWidget target) hasEntered,
       void Function()? hasNotEntered) {
-    for (CanvasWidget cWid in widgets) {
+    CanvasWidget? cv;
+    List<CanvasWidget> canvasWidgets;
+    if (widget.runtimeType == EditorPane) {
+      canvasWidgets = (widget as EditorPane).widgets;
+    } else {
+      cv = (widget as CanvasWidget);
+      canvasWidgets = (widget as CanvasWidget).widget!.children!.getChildren();
+    }
+    for (CanvasWidget cWid in canvasWidgets) {
       if (DragUtils.hitTest(location, cWid)) {
         FlutterSketchWidget fsWidget = cWid.widget!;
         if (fsWidget.isViewGroup!) {
           CWHolder fsWChildren = fsWidget.children!;
           if (fsWidget.isMultiChilded!) {
-            hasEntered!();
-
-            return findCanvasWidget(location, fsWChildren.getChildren(),
-                indicatior, hasEntered, hasNotEntered);
+            cv = cWid;
+            findCanvasWidget(location, cWid, indicatior, hasEntered, hasNotEntered);
+            print(cv);
+            break;
           } else {
             if (fsWChildren.isNotEmpty()) {
-              hasEntered!();
-
-              return findCanvasWidget(location, fsWChildren.getChildren(),
-                  indicatior, hasEntered, hasNotEntered);
+              cv = findCanvasWidget(
+                  location, cWid, indicatior, hasEntered, hasNotEntered);
+              break;
             } else {
-              hasEntered!();
-              return cWid;
+              cv = cWid;
+              break;
             }
           }
         } else {
-          hasEntered!();
-          return cWid;
+          cv = cWid;
+          break;
         }
       }
     }
-    hasNotEntered!();
-    return null;
+    if(cv != null) hasEntered(cv);
+    return cv;
   }
 
   static CanvasWidget getTappedWidget(
       CanvasWidget widget,
       Offset location,
       SelectionIndicatior indicatior,
-      void Function()? hasEntered,
-      void Function()? hasNotEntered) {
-
+      void Function(CanvasWidget target) hasEntered,
+      void Function() hasNotEntered) {
+    CanvasWidget cv = widget;
     for (CanvasWidget cWid in widget.widget!.children!.getChildren()) {
       if (DragUtils.hitTest(location, cWid)) {
         FlutterSketchWidget fsWidget = cWid.widget!;
         if (fsWidget.isViewGroup!) {
           CWHolder fsWChildren = fsWidget.children!;
           if (fsWidget.isMultiChilded!) {
-            hasEntered!();
-
-            return getTappedWidget(cWid, location, indicatior, hasEntered, hasNotEntered);
+            cv = cWid;
+            break;
           } else {
             if (fsWChildren.isNotEmpty()) {
-              hasEntered!();
-
-              return getTappedWidget(cWid.widget!.children!.elementAt(0), location, indicatior, hasEntered, hasNotEntered);
+              cv = getTappedWidget(fsWChildren.elementAt(0), location,
+                  indicatior, hasEntered, hasNotEntered);
+              break;
             } else {
-              hasEntered!();
-              return cWid;
+              cv = cWid;
+              break;
             }
           }
         } else {
-          hasEntered!();
-          return cWid;
+          cv = cWid;
+          break;
         }
       }
     }
-    print("none");
-    hasEntered!();
-    return widget;
+    hasEntered(cv);
+    print(cv);
+    return cv;
   }
 }

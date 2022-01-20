@@ -214,87 +214,8 @@ class _EditorPaneState extends State<EditorPane> {
     );
   }
 
-//this widget is generated everytime when user drags widget from pallette
-  // Widget sampleWidget(String type) {
-  //   Widget? draggable; //main widget
 
-  //   // Widget txt = TextWidget(
-  //   //   //widget which we want to build
-  //   //   key: GlobalKey(),
-  //   // );
-
-  //   Widget? txt = widget.pallettelist.generateWidget(type, GlobalKey());
-
-  //   Widget containerBox =
-  //       Container(color: Colors.amber, child: IgnorePointer(child: txt));
-
-  //   Widget view = GestureDetector(
-  //     child: containerBox,
-  //     onTap: () {
-  //       widget.selectionIndicatior.setVisibility(true);
-  //       widget.selectionIndicatior.selectWidget(txt);
-  //     },
-  //   );
-
-  //   Widget feedback = Container(
-  //       key: GlobalKey(),
-  //       color: Colors.amber,
-  //       width: 200,
-  //       height: 60,
-  //       clipBehavior: Clip.none);
-
-  //   void dragStart() {
-  //     setState(() {
-  //       widget.currentDraggingWidget = draggable;
-  //       widget.widgets.remove(draggable);
-  //       widget.hiddenWidgets.add(widget.currentDraggingWidget!);
-  //     });
-  //     widget.selectionIndicatior.selectWidget(draggable!);
-  //     widget.selectionIndicatior.setVisibility(false);
-  //   }
-
-  //   void dragMove(DragUpdateDetails details) {
-  //     for (CanvasWidget wid in widget.widgets) {
-  //       if (DragUtils.hitTest(details.globalPosition, wid)) {
-  //         widget.selectionIndicatior.selectWidget(wid);
-  //         widget.selectionIndicatior.setVisibility(true);
-  //       } else {
-  //         widget.selectionIndicatior.setVisibility(true);
-  //       }
-  //     }
-  //   }
-
-  //   void drop() {
-  //     setState(() {
-  //       widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
-  //       widget.widgets.add(widget.currentDraggingWidget!);
-  //       widget.selectionIndicatior.setVisibility(true);
-  //       widget.selectionIndicatior.selectWidget(widget.currentDraggingWidget!);
-  //     });
-  //   }
-
-  //   draggable = Draggable(
-  //       key: GlobalKey(),
-  //       child: view,
-  //       feedback: feedback,
-  //       onDragStarted: () {
-  //         dragStart();
-  //       },
-  //       onDragUpdate: (DragUpdateDetails details) {
-  //         debugPrint(details.globalPosition.toString());
-  //         dragMove(details);
-  //       },
-  //       onDragEnd: (details) {
-  //         try {
-  //           drop();
-  //         } catch (e) {
-  //           print("drop: " + e.toString());
-  //         }
-  //       });
-
-  //   return draggable;
-  // }
-
+  //this widget is generated everytime when user drags widget from pallette  
   CanvasWidget canvasWidget(String type) {
     CanvasWidget? cWidget;
 
@@ -305,17 +226,18 @@ class _EditorPaneState extends State<EditorPane> {
       onSelect: (TapDownDetails details) {
         setState(() {
           widget.currentDraggingWidget = DragUtils.getTappedWidget(
-                  cWidget! ,
-                  details.globalPosition,
-                  widget.selectionIndicatior,
-                   () {
+              cWidget!, details.globalPosition, widget.selectionIndicatior,
+              (cv) {
             widget.selectionIndicatior.setVisibility(true);
-            widget.selectionIndicatior
-                .selectWidget(cWidget);
-          }, () {});
-
-          controllers = null;
-          controllers = cWidget.widget!.controllers!;
+            widget.selectionIndicatior.selectWidget(cv);
+            
+            controllers = null;
+            controllers = cv.widget!.controllers!;
+            print(cv);
+          }, () {
+          
+          });
+          
         });
       },
       dragStart: () {
@@ -335,11 +257,11 @@ class _EditorPaneState extends State<EditorPane> {
         shadow.setPosition(details);
 
         dropTarget = DragUtils.findCanvasWidget(
-            details.globalPosition, widget.widgets, widget.selectionIndicatior,
-            () {
+            details.globalPosition, widget , widget.selectionIndicatior,
+            (target) {
           //hasEntered
 
-          widget.selectionIndicatior.selectWidget(dropTarget);
+          widget.selectionIndicatior.selectWidget(target);
           widget.selectionIndicatior.setVisibility(true);
         }, () {
           //hasNotEntered
@@ -347,15 +269,7 @@ class _EditorPaneState extends State<EditorPane> {
           widget.selectionIndicatior.setVisibility(false);
         });
 
-        // for (CanvasWidget wid in widget.widgets) {
-        //   if (DragUtils.hitTest(details.globalPosition, wid)) {
-        //     widget.selectionIndicatior.selectWidget(wid);
-        //     widget.selectionIndicatior.setVisibility(true);
-        //     break;
-        //   } else {
-        //     widget.selectionIndicatior.setVisibility(false);
-        //   }
-        // }
+      
       },
       dragEnd: (details) {
         shadow.setVisibility(false);
