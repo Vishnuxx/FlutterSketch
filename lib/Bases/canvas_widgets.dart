@@ -29,7 +29,7 @@ class CanvasWidget extends StatelessWidget {
         key: GlobalKey(),
         child: GestureDetector(
           child: Container(
-              color: Colors.amber, child: IgnorePointer(child: widget!)),
+              color: Colors.amber, child: widget!),
           onTapDown: (TapDownDetails details) => onSelect!(details),
         ),
         feedback: Container(),

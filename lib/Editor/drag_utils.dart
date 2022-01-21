@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Bases/fs_controller.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Bases/traversal_data.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 
@@ -23,48 +23,55 @@ class DragUtils {
     return collide;
   }
 
-  static CanvasWidget? findCanvasWidget(
+  static TraversalData? findWidgetAt(
       Offset location,
       Widget widget,
       SelectionIndicatior indicatior,
-      void Function(CanvasWidget target) hasEntered,
+      void Function(TraversalData data) hasEntered,
       void Function()? hasNotEntered) {
+    TraversalData data = TraversalData();
     CanvasWidget? cv;
     List<CanvasWidget> canvasWidgets;
+
     if (widget.runtimeType == EditorPane) {
-      canvasWidgets = (widget as EditorPane).widgets;
+      data.parentList = (widget as EditorPane).widgets;
     } else {
-      cv = (widget as CanvasWidget);
-      canvasWidgets = (widget as CanvasWidget).widget!.children!.getChildren();
+      data.canvasWidget = (widget as CanvasWidget);
+      data.parentList =
+          (widget as CanvasWidget).widget!.children!.getChildren();
     }
-    for (CanvasWidget cWid in canvasWidgets) {
+
+    for (CanvasWidget cWid in data.parentList!) {
       if (DragUtils.hitTest(location, cWid)) {
         FlutterSketchWidget fsWidget = cWid.widget!;
         if (fsWidget.isViewGroup!) {
-          CWHolder fsWChildren = fsWidget.children!;
+          //data.parentList = fsWidget.children!.getChildren();
           if (fsWidget.isMultiChilded!) {
-            cv = cWid;
-            findCanvasWidget(location, cWid, indicatior, hasEntered, hasNotEntered);
-            print(cv);
+           
+            data = findWidgetAt(
+                location, cWid, indicatior, hasEntered, hasNotEntered)!;
+            print(data.canvasWidget);
             break;
           } else {
+            CWHolder fsWChildren = fsWidget.children!;
             if (fsWChildren.isNotEmpty()) {
-              cv = findCanvasWidget(
-                  location, cWid, indicatior, hasEntered, hasNotEntered);
+              data = findWidgetAt(
+                  location, cWid, indicatior, hasEntered, hasNotEntered)!;
               break;
             } else {
-              cv = cWid;
+              data.canvasWidget = cWid;
               break;
             }
           }
         } else {
-          cv = cWid;
+          data.canvasWidget = cWid;
           break;
         }
       }
     }
-    if(cv != null) hasEntered(cv);
-    return cv;
+    if (data.canvasWidget != null) hasEntered(data);
+    //data.widget = cv!;
+    return data;
   }
 
   static CanvasWidget getTappedWidget(

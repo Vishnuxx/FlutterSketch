@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Bases/traversal_data.dart';
 import 'package:flutteruibuilder/Controls/controls_pane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
@@ -25,10 +26,8 @@ class EditorPane extends StatefulWidget {
 
   List<CanvasWidget> widgets = [];
   SelectionIndicatior selectionIndicatior = SelectionIndicatior();
-  CanvasWidget? currentDraggingWidget;
 
   Widget? dummyBox; //dummy widget is used to indicate the  droppable region
-  List<Widget> hiddenWidgets = [];
 
   WidgetsPalletteList pallettelist = WidgetsPalletteList();
 
@@ -47,10 +46,16 @@ class EditorPane extends StatefulWidget {
 }
 
 class _EditorPaneState extends State<EditorPane> {
+  CanvasWidget? currentDraggingWidget;
+  bool? isSelected;
+  Offset? pointerLocation;
+  int? prevIndex; //records the index of the item being dragged.used to restor position of the dragged element if dragging fails
+
+  List<Widget> hiddenWidgets = [];
   List<WidgetController>? controllers = [];
   DragShadow shadow = DragShadow();
   late EditorCanvas canvas;
-  CanvasWidget? dropTarget;
+  TraversalData? dropTarget;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,7 @@ class _EditorPaneState extends State<EditorPane> {
             width: 0,
             height: 0,
             child: Column(
-              children: widget.hiddenWidgets,
+              children: hiddenWidgets,
             )), //used to store widgets temporarily
         shadow
       ],
@@ -206,7 +211,7 @@ class _EditorPaneState extends State<EditorPane> {
           try {
             var a = canvasWidget(label); //sampleWidget(label);
             widget.widgets.add(a);
-            widget.currentDraggingWidget = a;
+            currentDraggingWidget = a;
             // ignore: empty_catches
           } on Exception {}
         });
@@ -214,8 +219,7 @@ class _EditorPaneState extends State<EditorPane> {
     );
   }
 
-
-  //this widget is generated everytime when user drags widget from pallette  
+  //this widget is generated everytime when user drags widget from pallette
   CanvasWidget canvasWidget(String type) {
     CanvasWidget? cWidget;
 
@@ -223,79 +227,118 @@ class _EditorPaneState extends State<EditorPane> {
       type,
       WidgetsPalletteList().generateWidget(type, GlobalKey()),
       key: GlobalKey(),
+      //on element selected
       onSelect: (TapDownDetails details) {
-        setState(() {
-          widget.currentDraggingWidget = DragUtils.getTappedWidget(
-              cWidget!, details.globalPosition, widget.selectionIndicatior,
-              (cv) {
-            widget.selectionIndicatior.setVisibility(true);
-            widget.selectionIndicatior.selectWidget(cv);
-            
-            controllers = null;
-            controllers = cv.widget!.controllers!;
-            print(cv);
-          }, () {
-          
-          });
-          
-        });
+        onSelect(details, cWidget!);
       },
+
+      //on starting drag
       dragStart: () {
-        shadow.setSizeOf(cWidget!);
-        setState(() {
-          widget.currentDraggingWidget = cWidget;
-          widget.widgets.remove(widget.currentDraggingWidget!);
-          widget.hiddenWidgets.add(widget.currentDraggingWidget!);
-          controllers = null;
-
-          widget.selectionIndicatior.selectWidget(cWidget);
-          widget.selectionIndicatior.setVisibility(false);
-        });
+        print("started");
+        onDragStart(cWidget);
       },
+
+      //on moving the drag
       dragMove: (details) {
-        shadow.setVisibility(true);
-        shadow.setPosition(details);
-
-        dropTarget = DragUtils.findCanvasWidget(
-            details.globalPosition, widget , widget.selectionIndicatior,
-            (target) {
-          //hasEntered
-
-          widget.selectionIndicatior.selectWidget(target);
-          widget.selectionIndicatior.setVisibility(true);
-        }, () {
-          //hasNotEntered
-
-          widget.selectionIndicatior.setVisibility(false);
-        });
-
-      
+        onDragMove(details);
       },
+
+      //onDrop
       dragEnd: (details) {
-        shadow.setVisibility(false);
-        setState(() {
-          if (dropTarget != null && dropTarget!.widget!.isViewGroup!) {
-            if (dropTarget!.widget!.isMultiChilded!) {
-              widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
-              dropTarget!.widget!.children!.add(widget.currentDraggingWidget!);
-            } else if (dropTarget!.widget!.children!.isEmpty()) {
-              widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
-              dropTarget!.widget!.children!
-                  .insert(0, widget.currentDraggingWidget!);
-            }
-          } else {
-            widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
-            widget.widgets.add(widget.currentDraggingWidget!);
-          }
-          // widget.hiddenWidgets.remove(widget.currentDraggingWidget!);
-          // widget.widgets.add(widget.currentDraggingWidget!);
-        });
+        onDragEnd();
       },
+
+      //onCompleted
       dragCompleted: () {
         widget.selectionIndicatior.setVisibility(false);
       },
     );
 
     return cWidget;
+  }
+
+
+//
+
+
+
+
+//
+
+
+
+
+
+  //drag methods
+
+  void onSelect(TapDownDetails details, CanvasWidget cWidget) {
+    isSelected = true;
+    setState(() {
+      // pointerLocation = details.globalPosition;
+      dropTarget = DragUtils.findWidgetAt(
+          details.globalPosition, cWidget, widget.selectionIndicatior, (cv) {
+        widget.selectionIndicatior.setVisibility(true);
+        widget.selectionIndicatior.selectWidget(cv.canvasWidget);
+
+        controllers = null;
+        controllers = cv.canvasWidget?.widget?.controllers!;
+      }, () {});
+      currentDraggingWidget = dropTarget?.canvasWidget;
+    });
+  }
+
+  void onDragStart(CanvasWidget? cWidget) {
+    shadow.setSizeOf(cWidget!);
+    setState(() {
+      //draggingList = dropTarget?.parentList; //previous list of current dragging item
+
+      widget.widgets.remove(
+          currentDraggingWidget!); //removes the current dragging item from the parentList
+      hiddenWidgets.add(currentDraggingWidget!);
+      controllers = null;
+
+      widget.selectionIndicatior.selectWidget(cWidget);
+      widget.selectionIndicatior.setVisibility(false);
+    });
+  }
+
+  void onDragMove(DragUpdateDetails details) {
+    shadow.setVisibility(true);
+    shadow.setPosition(details);
+
+    dropTarget = DragUtils.findWidgetAt(
+        details.globalPosition, widget, widget.selectionIndicatior, (data) {
+      //hasEntered
+
+      widget.selectionIndicatior.selectWidget(data.canvasWidget);
+      widget.selectionIndicatior.setVisibility(true);
+    }, () {
+      //hasNotEntered
+
+      widget.selectionIndicatior.setVisibility(false);
+    });
+  }
+
+  void onDragEnd() {
+    shadow.setVisibility(false);
+    setState(() {
+      FlutterSketchWidget? fs = dropTarget?.canvasWidget?.widget;
+      if (dropTarget != null && fs != null && fs.isViewGroup!) {
+        if (fs.isMultiChilded!) {
+          //if target is multichilded
+          hiddenWidgets.remove(currentDraggingWidget!);
+          fs.children!.add(currentDraggingWidget!);
+        } else if (fs.children!.isEmpty()) {
+          //if target is single childed
+          hiddenWidgets.remove(currentDraggingWidget!);
+          fs.children!.insert(0, currentDraggingWidget!);
+        }
+      } else {
+        //if target is root
+        print("hjks");
+        hiddenWidgets.remove(currentDraggingWidget!);
+        widget.widgets.add(currentDraggingWidget!);
+      }
+    });
   }
 }
