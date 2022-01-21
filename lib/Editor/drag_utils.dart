@@ -8,7 +8,7 @@ import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 
 class DragUtils {
   //checks if two widgets hits
-  static bool hitTest(Offset coordinate, CanvasWidget target) {
+  static bool isHitting(Offset coordinate, CanvasWidget target) {
     RenderBox box2 = (target.key as GlobalKey)
         .currentContext
         ?.findRenderObject() as RenderBox;
@@ -42,7 +42,7 @@ class DragUtils {
     }
 
     for (CanvasWidget cWid in data.parentList!) {
-      if (DragUtils.hitTest(location, cWid)) {
+      if (DragUtils.isHitting(location, cWid)) {
         FlutterSketchWidget fsWidget = cWid.widget!;
         if (fsWidget.isViewGroup!) {
           //data.parentList = fsWidget.children!.getChildren();
@@ -82,7 +82,7 @@ class DragUtils {
       void Function() hasNotEntered) {
     CanvasWidget cv = widget;
     for (CanvasWidget cWid in widget.widget!.children!.getChildren()) {
-      if (DragUtils.hitTest(location, cWid)) {
+      if (DragUtils.isHitting(location, cWid)) {
         FlutterSketchWidget fsWidget = cWid.widget!;
         if (fsWidget.isViewGroup!) {
           CWHolder fsWChildren = fsWidget.children!;
