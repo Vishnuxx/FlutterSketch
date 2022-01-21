@@ -12,16 +12,6 @@ class EditorCanvas extends StatefulWidget {
 
   EditorCanvas({Key? key, this.children}) : super(key: key);
 
-  bool hasEntered(Offset offset) {
-    RenderBox box2 = (key as GlobalKey).currentContext?.findRenderObject() as RenderBox;
-    final size2 = box2.size;
-    final pos = box2.localToGlobal(Offset.zero);
-    final collide = offset.dx > pos.dx &&
-        offset.dx < (pos.dx + size2.width) &&
-        offset.dy > pos.dy &&
-        offset.dy < (pos.dy + size2.height);
-    return collide;
-  }
 
   @override
   _EditorCanvasState createState() => _EditorCanvasState();
