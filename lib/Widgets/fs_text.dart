@@ -19,7 +19,6 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   CWHolder? children;
 
   final Map _props = {
-    "key": GlobalKey(),
     "name": "text",
     "text": "textview",
     "color": Colors.amber
