@@ -3,7 +3,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
@@ -29,7 +28,7 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
   EditorCanvas({Key? key}) : super(key: key) {
     isMultiChilded = true;
     isViewGroup = true;
-    children = CWHolder([] , _state as State);
+    children = CWHolder([] , _state);
   }
 
   
@@ -62,7 +61,7 @@ class _EditorCanvasState extends State<EditorCanvas> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
         ,

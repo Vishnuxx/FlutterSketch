@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
@@ -27,7 +26,7 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   FSText({Key? key}) : super(key: key) {
     isMultiChilded = false;
     isViewGroup = false;
-    children = CWHolder([] , _state as State);;
+    children = CWHolder([] , _state);
     _initControllers();
   }
 

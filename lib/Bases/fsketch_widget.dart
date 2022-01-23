@@ -6,7 +6,6 @@ that are being drawn  in the canvas
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
 

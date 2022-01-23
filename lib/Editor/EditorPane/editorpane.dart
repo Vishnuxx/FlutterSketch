@@ -284,7 +284,7 @@ class _EditorPaneState extends State<EditorPane> {
         controllers = null;
         widget.selectionIndicatior.setVisibility(true);
         widget.selectionIndicatior.selectWidget(cv.canvasWidget);
-        controllers = cv.canvasWidget?.widget?.controllers!;
+        controllers = cv.canvasWidget?.widget?.controllers;
         currentDraggingWidget = cv.canvasWidget;
         print(cv.parentCWHolder!.getChildren());
         cv.parentCWHolder!.show();
@@ -363,7 +363,7 @@ class _EditorPaneState extends State<EditorPane> {
   void onDragEnd(bool isFromPallette) {
     if (isFromPallette) {
       if (dropData?.canvasWidget != null) {
-        dropData?.parentCWHolder?.add(currentDraggingWidget!);
+        dropData?.childCWHolder?.add(currentDraggingWidget!);
       }
     } else {
       //is not from pallette
@@ -376,7 +376,7 @@ class _EditorPaneState extends State<EditorPane> {
             FlutterSketchWidget? fs = dropData?.canvasWidget?.widget;
             if (fs != null && fs.isViewGroup!) {
               hiddenWidgets.remove(currentDraggingWidget!);
-              fs.children!.add(currentDraggingWidget!);
+              dropData?.childCWHolder?.add(currentDraggingWidget!);
             } else {
               // hiddenWidgets.remove(currentDraggingWidget!);
               // fs.children!.add(currentDraggingWidget!);

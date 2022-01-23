@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 
 class CWHolder {
-  List<CanvasWidget> _list;
-  State _state;
+  final List<CanvasWidget> _list;
+  final State _state;
 
   CWHolder(this._list, this._state);
 
   void add(CanvasWidget widget) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _list.add(widget);
     });
   }
 
   void remove(CanvasWidget widget) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _list.remove(widget);
       print(_state);
@@ -23,6 +25,7 @@ class CWHolder {
   }
 
   void insert(int index, CanvasWidget widget) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _list.insert(index, widget);
     });
@@ -40,8 +43,8 @@ class CWHolder {
 
   int length() => _list.length;
 
-  bool isNotEmpty() => _list.length != 0;
-  bool isEmpty() => _list.length == 0;
+  bool isNotEmpty() => _list.isNotEmpty;
+  bool isEmpty() => _list.isEmpty;
 
-  List<CanvasWidget> getChildren() => this._list;
+  List<CanvasWidget> getChildren() => _list;
 }

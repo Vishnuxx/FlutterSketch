@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 
+// ignore: must_be_immutable
 class DragShadow extends StatefulWidget {
-  _DragShadowState _state = _DragShadowState();
+  final _DragShadowState _state = _DragShadowState();
   double? x;
   double? y;
   bool? visible = false;
@@ -12,6 +13,7 @@ class DragShadow extends StatefulWidget {
   DragShadow({Key? key}) : super(key: key);
 
   void setPosition(DragUpdateDetails details) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       x = details.globalPosition.dy;
       y = details.globalPosition.dx;
@@ -19,6 +21,7 @@ class DragShadow extends StatefulWidget {
   }
 
   void setVisibility(bool visibility) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       visible = visibility;
     });
@@ -30,6 +33,7 @@ class DragShadow extends StatefulWidget {
         ?.findRenderObject() as RenderBox;
 
     final size = box.size;
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _width = size.width;
       _height = size.height;
@@ -37,6 +41,7 @@ class DragShadow extends StatefulWidget {
   }
 
   @override
+  // ignore: no_logic_in_create_state
   _DragShadowState createState() => _state;
 }
 
@@ -52,7 +57,7 @@ class _DragShadowState extends State<DragShadow> {
               key: GlobalKey(),
               width: widget._width,
               height: widget._height,
-              decoration: BoxDecoration(color: Colors.black26 ),
+              decoration: const BoxDecoration(color: Colors.black26 ),
               clipBehavior: Clip.none),
         ),
       );

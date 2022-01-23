@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/widget_controller.dart';
@@ -26,7 +25,7 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
   FSColumn({Key? key}) : super(key: key) {
     isMultiChilded = true;
     isViewGroup = true;
-    children = CWHolder([] , _state as State);
+    children = CWHolder([] , _state);
     _initControllers();
   }
 
@@ -108,7 +107,7 @@ class _FSColumnState extends State<FSColumn> {
       width: double.parse(widget._props["width"].toString()),
       height: double.parse(widget._props["height"].toString()),
       color: widget._props["color"],
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
         ,

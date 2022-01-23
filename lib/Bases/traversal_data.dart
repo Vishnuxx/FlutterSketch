@@ -6,9 +6,11 @@ import 'package:flutteruibuilder/Bases/cw_holder.dart';
 class TraversalData {
   CanvasWidget? canvasWidget;
   CWHolder? parentCWHolder;
+  CWHolder? childCWHolder;
 
   TraversalData() {
-    this.canvasWidget = null;
-    this.parentCWHolder = null;
+    canvasWidget = null;
+    parentCWHolder = null;
+    childCWHolder = null;
   }
 }

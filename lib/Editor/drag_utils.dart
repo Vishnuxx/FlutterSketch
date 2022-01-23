@@ -29,8 +29,8 @@ class DragUtils {
       bool isForSelection,
       Offset location,
       Widget widget,
-      void Function(TraversalData data)? hasEntered,
-      void Function()? hasNotEntered) {
+      void Function(TraversalData data) hasEntered,
+      void Function() hasNotEntered) {
     TraversalData? data = TraversalData();
     bool isEntered = false;
 
@@ -45,62 +45,85 @@ class DragUtils {
       DragUtils.depth(data, location, widget, parentlist, isForSelection);
       isEntered = true;
     }
-
-    print(data.canvasWidget.toString() + isEntered.toString());
-    data.parentCWHolder?.show();
-    if (data.canvasWidget == null && isEntered) {
-      print("Entererrerererer");
-      data.canvasWidget = (widget as EditorPane).root;
-      data.parentCWHolder = parentlist;
-      hasEntered!(data);
+    
+    if (isEntered && data.canvasWidget != null) {
+      hasEntered(data);
     } else {
-      if (isEntered) {
-        hasEntered!(data);
-      } else {
-        hasNotEntered!();
-      }
+      hasNotEntered();
     }
   }
+
+  // static void depth(TraversalData? data, Offset location, Widget widget,
+  //     CWHolder parentList, bool isForSelection) {
+  //   // TraversalData? data = TraversalData();
+
+  //   CanvasWidget? canvas;
+  //   if (widget.runtimeType == EditorPane) {
+  //     canvas = (widget as EditorPane).root;
+  //     data?.parentCWHolder = parentList;
+  //     data?.childCWHolder = (widget as EditorPane).root?.widget?.children;
+  //   } else {
+  //     canvas = widget as CanvasWidget;
+  //     data?.parentCWHolder = parentList;
+  //     data?.childCWHolder = canvas.widget!.children;
+  //   }
+  //   data?.canvasWidget = canvas;
+
+  //   for (CanvasWidget child in data!.childCWHolder!.getChildren()) {
+  //     if (DragUtils.isHitting(location, child)) {
+  //       data.canvasWidget = child;
+  //       FlutterSketchWidget fw = child.widget!;
+  //       DragUtils.depth(data, location, data.canvasWidget! , data.childCWHolder! , isForSelection);
+  //     }
+  //   }
+  // }
 
   static void depth(TraversalData? data, Offset location, Widget widget,
       CWHolder parentList, bool isForSelection) {
     // TraversalData? data = TraversalData();
 
-    for (CanvasWidget child in parentList.getChildren()) {
+    CanvasWidget? canvas;
+    if (widget.runtimeType == EditorPane) {
+      canvas = (widget as EditorPane).root;
+      data?.parentCWHolder = parentList;
+      data?.childCWHolder = (widget as EditorPane).root?.widget?.children;
+    } else {
+      canvas = widget as CanvasWidget;
+      data?.parentCWHolder = parentList;
+      data?.childCWHolder = canvas.widget!.children;
+    }
+    data?.canvasWidget = canvas;
+
+    for (CanvasWidget child in data!.childCWHolder!.getChildren()) {
       if (DragUtils.isHitting(location, child)) {
-        data!.canvasWidget = child;
-        data.parentCWHolder = child.widget!.children!;
-        FlutterSketchWidget fsw = child.widget!;
-        if (fsw.isViewGroup!) {
-          if (fsw.isMultiChilded!) {
-            //multi childed
-            DragUtils.depth(
-                data, location, child, child.widget!.children!, isForSelection);
+        FlutterSketchWidget fw = child.widget!;
+        if (fw.isViewGroup!) {
+          if (fw.isMultiChilded!) {
+            data.canvasWidget = child;
+            DragUtils.depth(data, location, data.canvasWidget!,
+                data.childCWHolder!, isForSelection);
           } else {
-             //single childed
-            if (fsw.children!.isEmpty()) {
-             
+            if (isForSelection) {
               data.canvasWidget = child;
-              data.parentCWHolder = child.widget!.children!;
-            } else {
-              DragUtils.depth(data, location, fsw.children!.elementAt(0),
-                  child.widget!.children!, isForSelection);
+            DragUtils.depth(data, location, data.canvasWidget!,
+                data.childCWHolder!, isForSelection);
+            }
+            else{
+              if(fw.children!.isEmpty()) {
+                 data.canvasWidget = child;
+            DragUtils.depth(data, location, data.canvasWidget!,
+                data.childCWHolder!, isForSelection);
+              }
             }
           }
-          break;
         } else {
-          //no childed
           if (isForSelection) {
             data.canvasWidget = child;
-            data.parentCWHolder = parentList;
+            DragUtils.depth(data, location, data.canvasWidget!,
+                data.childCWHolder!, isForSelection);
           }
-          break;
         }
       }
-    }
-
-    if (data?.canvasWidget == null || data?.parentCWHolder == null) {
-      data = null;
     }
   }
 }
