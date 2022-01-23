@@ -89,6 +89,3 @@ class _FSTextState extends State<FSText> {
   }
 }
 
-class TextWidgetModel {
-  String name = "textview";
-}

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
@@ -23,115 +24,6 @@ class DragUtils {
     return collide;
   }
 
-  // static TraversalData? findWidgetAt(
-  //     bool isForSelection,
-  //     Offset location,
-  //     Widget widget,
-  //     void Function(TraversalData data) hasEntered,
-  //     void Function()? hasNotEntered) {
-  //   TraversalData data = TraversalData();
-
-  //   if (widget.runtimeType == EditorPane) {
-  //     //data.canvasWidget = (widget as EditorPane).root as CanvasWidget;
-  //     data.parentCWHolder = (widget as EditorPane).widgets;
-  //   } else {
-  //     data.canvasWidget = (widget as CanvasWidget);
-  //     data.parentCWHolder = (widget as CanvasWidget).widget?.children;
-  //   }
-
-  //   for (CanvasWidget cWid in data.parentCWHolder!.getChildren()) {
-  //     if (DragUtils.isHitting(location, cWid)) {
-  //       //  data.canvasWidget = cWid;
-  //       FlutterSketchWidget fsWidget = cWid.widget!;
-  //       //if is a viewgroup
-  //       if (fsWidget.isViewGroup!) {
-  //         // if is multichilded
-  //         if (fsWidget.isMultiChilded!) {
-  //           //if children is empty
-  //           if (fsWidget.children!.isEmpty()) {
-  //             data.canvasWidget = cWid;
-  //           } else {
-  //             //if not empty
-  //             data = findWidgetAt(
-  //                 isForSelection, location, cWid, hasEntered, hasNotEntered)!;
-  //           }
-  //           break;
-  //         } else {
-  //           //is is single childed
-  //           if (fsWidget.children!.isEmpty()) {
-  //             data.canvasWidget = cWid;
-  //             break;
-  //           } else {
-  //             data = findWidgetAt(
-  //                 isForSelection,
-  //                 location,
-  //                 cWid.widget!.children!.elementAt(0),
-  //                 hasEntered,
-  //                 hasNotEntered)!;
-  //             break;
-  //           }
-  //         }
-  //       } else if (isForSelection) {
-  //         //if no childed
-  //         data.canvasWidget = cWid;
-  //         print('no chid');
-  //         break;
-  //       }
-  //     } else {
-  //       //is not hitting
-  //     }
-  //   }
-
-  //   if (data.canvasWidget != null)
-  //     hasEntered(data);
-  //   else
-  //     hasNotEntered!();
-  //   //data.widget = cv!;
-  //   return data;
-  // }
-
-  //
-
-  // static CanvasWidget getTappedWidget(
-  //     CanvasWidget widget,
-  //     Offset location,
-  //     SelectionIndicatior indicatior,
-  //     void Function(CanvasWidget target) hasEntered,
-  //     void Function() hasNotEntered) {
-  //   CanvasWidget cv = widget;
-  //   for (CanvasWidget cWid in widget.widget!.children!.getChildren()) {
-  //     if (DragUtils.isHitting(location, cWid)) {
-  //       FlutterSketchWidget fsWidget = cWid.widget!;
-  //       if (fsWidget.isViewGroup!) {
-  //         CWHolder fsWChildren = fsWidget.children!;
-  //         if (fsWidget.isMultiChilded!) {
-  //           cv = cWid;
-  //           break;
-  //         } else {
-  //           if (fsWChildren.isNotEmpty()) {
-  //             cv = getTappedWidget(fsWChildren.elementAt(0), location,
-  //                 indicatior, hasEntered, hasNotEntered);
-  //             break;
-  //           } else {
-  //             cv = cWid;
-  //             break;
-  //           }
-  //         }
-  //       } else {
-  //         cv = cWid;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   hasEntered(cv);
-  //   print(cv);
-  //   return cv;
-  // }
-
-//
-
-//
-
   static void findWidgetsAt(
       CWHolder parentlist,
       bool isForSelection,
@@ -140,47 +32,69 @@ class DragUtils {
       void Function(TraversalData data)? hasEntered,
       void Function()? hasNotEntered) {
     TraversalData? data = TraversalData();
+    bool isEntered = false;
 
+    if (widget.runtimeType == EditorPane) {
+      if (DragUtils.isHitting(location, (widget as EditorPane).root!)) {
+        isEntered = true;
+        DragUtils.depth(data, location, widget, parentlist, isForSelection);
+      } else {
+        isEntered = false;
+      }
+    } else {
+      DragUtils.depth(data, location, widget, parentlist, isForSelection);
+      isEntered = true;
+    }
 
-    DragUtils.depth(data, location, widget, parentlist, isForSelection);
-    
-    if (data == null ||
-        data.canvasWidget != null && data.parentCWHolder != null) {
+    print(data.canvasWidget.toString() + isEntered.toString());
+    data.parentCWHolder?.show();
+    if (data.canvasWidget == null && isEntered) {
+      print("Entererrerererer");
+      data.canvasWidget = (widget as EditorPane).root;
+      data.parentCWHolder = parentlist;
       hasEntered!(data);
     } else {
-      hasNotEntered!();
+      if (isEntered) {
+        hasEntered!(data);
+      } else {
+        hasNotEntered!();
+      }
     }
   }
 
-  
-
-  static TraversalData? depth(TraversalData? data, Offset location,
-      Widget widget, CWHolder parentList, bool isForSelection) {
+  static void depth(TraversalData? data, Offset location, Widget widget,
+      CWHolder parentList, bool isForSelection) {
     // TraversalData? data = TraversalData();
 
     for (CanvasWidget child in parentList.getChildren()) {
       if (DragUtils.isHitting(location, child)) {
         data!.canvasWidget = child;
-        data.parentCWHolder = parentList;
+        data.parentCWHolder = child.widget!.children!;
         FlutterSketchWidget fsw = child.widget!;
         if (fsw.isViewGroup!) {
           if (fsw.isMultiChilded!) {
             //multi childed
             DragUtils.depth(
                 data, location, child, child.widget!.children!, isForSelection);
-          } else if (fsw.children!.isEmpty()) {
-            //single childed
-            data.canvasWidget = child;
-            data.parentCWHolder = parentList;
           } else {
-            DragUtils.depth(data, location, fsw.children!.elementAt(0),
-                child.widget!.children!, isForSelection);
-          } 
+             //single childed
+            if (fsw.children!.isEmpty()) {
+             
+              data.canvasWidget = child;
+              data.parentCWHolder = child.widget!.children!;
+            } else {
+              DragUtils.depth(data, location, fsw.children!.elementAt(0),
+                  child.widget!.children!, isForSelection);
+            }
+          }
           break;
         } else {
-            //no childed
+          //no childed
+          if (isForSelection) {
             data.canvasWidget = child;
             data.parentCWHolder = parentList;
+          }
+          break;
         }
       }
     }
@@ -188,7 +102,5 @@ class DragUtils {
     if (data?.canvasWidget == null || data?.parentCWHolder == null) {
       data = null;
     }
-    // print("jfksj" + data!.parentCWHolder!.getChildren().toString());
-    return data;
   }
 }

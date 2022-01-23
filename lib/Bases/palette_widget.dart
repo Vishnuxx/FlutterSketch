@@ -10,7 +10,7 @@ class PaletteWidget extends StatelessWidget {
   late String label ;
   late bool isDraggable;
   late void Function()? onDragStart;
-  late void Function(DragUpdateDetails)? onDragMove;
+  late void Function(DragUpdateDetails details)? onDragMove;
   late void Function()? onDragCompleted;
 
   PaletteWidget(
