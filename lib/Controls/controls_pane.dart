@@ -12,11 +12,15 @@ class ControlsPane extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         width: width,
-        child: Container(
-            padding: EdgeInsets.all(padding!),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: children!,
-            )));
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+              decoration: BoxDecoration(color: Color(0xffEDEDED), borderRadius: BorderRadius.all(Radius.circular(10)) ) ,
+              padding: EdgeInsets.all(padding!),
+              child: ListView(
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                children: children!,
+              )),
+        ));
   }
 }

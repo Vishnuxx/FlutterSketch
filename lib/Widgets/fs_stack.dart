@@ -4,8 +4,8 @@ import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Controls/widget_controller.dart';
 
 // ignore: must_be_immutable
-class FSColumn extends StatefulWidget implements FlutterSketchWidget {
-  final State _state = _FSColumnState();
+class FSStack extends StatefulWidget implements FlutterSketchWidget {
+  final State _state = _FSStackState();
 
   final Map _props = {
     "width": 200,
@@ -22,7 +22,7 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
   @override
   CWHolder? children;
 
-  FSColumn({Key? key}) : super(key: key) {
+  FSStack({Key? key}) : super(key: key) {
     isMultiChilded = true;
     isViewGroup = true;
     children = CWHolder([] , _state);
@@ -80,7 +80,7 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   // ignore: no_logic_in_create_state
-  _FSColumnState createState() => _state as _FSColumnState;
+  _FSStackState createState() => _state as _FSStackState;
 
   @override
   Map getProperties() => throw UnimplementedError();
@@ -100,7 +100,7 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
   List<WidgetController>? controllers;
 }
 
-class _FSColumnState extends State<FSColumn> {
+class _FSStackState extends State<FSStack> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -108,7 +108,7 @@ class _FSColumnState extends State<FSColumn> {
       height: double.parse(widget._props["height"].toString()),
       color: widget._props["color"],
       padding: const EdgeInsets.all(10),
-      child: Column(
+      child: Stack(
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
         ,
       ),

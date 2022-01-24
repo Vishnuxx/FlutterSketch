@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
-import 'package:flutteruibuilder/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Controls/widget_controller.dart';
 
 
 // ignore: must_be_immutable
@@ -60,7 +60,7 @@ class _EditorCanvasState extends State<EditorCanvas> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: double.parse("300"),
+      height: double.infinity,
       padding: const EdgeInsets.all(10),
       child: Column(
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []

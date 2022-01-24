@@ -7,7 +7,7 @@ that are being drawn  in the canvas
 
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Controls/widget_controller.dart';
 
 // ignore: must_be_immutable
 abstract class FlutterSketchWidget extends Widget {

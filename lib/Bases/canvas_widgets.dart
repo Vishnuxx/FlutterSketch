@@ -37,7 +37,7 @@ class CanvasWidget extends StatelessWidget {
         onDragCompleted: dragCompleted,
       );
     } else {
-      return Container(color: Colors.amber, child: widget!);
+      return Container( child: widget!);
     }
   }
 }

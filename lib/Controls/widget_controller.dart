@@ -48,7 +48,7 @@ class _WidgetControllerState extends State<WidgetController> {
           ),
           SizedBox(height:15.0),
           Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)) , color: const Color(0xffEBEBEB), ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)) , color: const Color(0xffDEDEDE), ),
               height: isOpened ? null: 0,
               child: Column(
                 children: [
