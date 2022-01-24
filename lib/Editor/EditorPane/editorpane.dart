@@ -198,10 +198,8 @@ class _EditorPaneState extends State<EditorPane> {
             });
           },
         ),
-        WidgetController(
-          "Text",
-          controllers: controllers,
-        )
+        ...?controllers ,
+       
       ],
     );
   }
@@ -283,7 +281,7 @@ class _EditorPaneState extends State<EditorPane> {
         dragData = cv;
         controllers = null;
         widget.selectionIndicatior.setVisibility(true);
-        widget.selectionIndicatior.selectWidget(cv.canvasWidget);
+        widget.selectionIndicatior.selectWidget(cv.canvasWidget , color: Color(0xffFF5C00));
         controllers = cv.canvasWidget?.widget?.controllers;
         currentDraggingWidget = cv.canvasWidget;
         print(cv.parentCWHolder!.getChildren());
@@ -311,9 +309,8 @@ class _EditorPaneState extends State<EditorPane> {
             hiddenWidgets.add(currentDraggingWidget!);
           });
           controllers = null;
-          widget.selectionIndicatior.selectWidget(dragData?.canvasWidget);
+          widget.selectionIndicatior.selectWidget(dragData?.canvasWidget ,  color: Color(0xff0082FB));
           widget.selectionIndicatior.setVisibility(false);
-          print("DragStarted");
         }
       }
     }
@@ -326,12 +323,11 @@ class _EditorPaneState extends State<EditorPane> {
           widget.widgets!, false, details.globalPosition, widget, (data) {
         //hasEntered
         dropData = data;
-        widget.selectionIndicatior.selectWidget(data.canvasWidget);
+        widget.selectionIndicatior.selectWidget(data.canvasWidget ,  color: Color(0xff0082FB));
         widget.selectionIndicatior.setVisibility(true);
-        print("entered");
       }, () {
         //hasNotEntered
-        print("not ENtered");
+       
         dropData?.canvasWidget = null;
         widget.selectionIndicatior.setVisibility(false);
       });
@@ -341,17 +337,16 @@ class _EditorPaneState extends State<EditorPane> {
         if (dragData != null) {
           shadow.setVisibility(true);
           shadow.setPosition(details);
-          print(details.globalPosition);
           DragUtils.findWidgetsAt(
               widget.widgets!, false, details.globalPosition, widget, (data) {
             //hasEntered
             dropData = data;
-            widget.selectionIndicatior.selectWidget(data.canvasWidget);
+            widget.selectionIndicatior.selectWidget(data.canvasWidget ,  color: Color(0xff0082FB));
             widget.selectionIndicatior.setVisibility(true);
-            print("entered");
+      
           }, () {
             //hasNotEntered
-            print("not ENtered");
+         
             dropData?.canvasWidget = null;
             widget.selectionIndicatior.setVisibility(false);
           });
@@ -364,6 +359,7 @@ class _EditorPaneState extends State<EditorPane> {
     if (isFromPallette) {
       if (dropData?.canvasWidget != null) {
         dropData?.childCWHolder?.add(currentDraggingWidget!);
+        //widget.selectionIndicatior.selectWidget(currentDraggingWidget!);
       }
     } else {
       //is not from pallette

@@ -8,6 +8,7 @@ import 'package:flutteruibuilder/Widgets/fs_column.dart';
 import 'package:flutteruibuilder/Widgets/fs_container.dart';
 import 'package:flutteruibuilder/Widgets/fs_iconbutton.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Widgets/fs_row.dart';
 import 'package:flutteruibuilder/Widgets/fs_text.dart';
 
 class WidgetsPalletteList {
@@ -39,6 +40,10 @@ class WidgetsPalletteList {
       
       case "Column":
         return FSColumn(key: key,);
+      
+      case "Row":
+        return FSRow(key: key,);
+
 
       default:
         break;

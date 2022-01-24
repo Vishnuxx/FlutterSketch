@@ -11,7 +11,8 @@ class SelectionIndicatior extends StatefulWidget {
     "height": 0.0,
     "width": 0.0,
     "x": 0.0,
-    "y": 0.0
+    "y": 0.0,
+    "color": const Color(0xffFF00B8)
   };
 
   SelectionIndicatior({Key? key}) : super(key: key);
@@ -43,23 +44,25 @@ class SelectionIndicatior extends StatefulWidget {
   }
 
   //if visible, then highlihts the selected widget
-  void selectWidget(CanvasWidget? widget, {double dx = 0, double dy = 0}) {
-      if (widget != null) {
-        _widget = widget;
-        final RenderBox box = (widget.key as GlobalKey)
-            .currentContext
-            ?.findRenderObject() as RenderBox;
-        final offset = Offset(dx, dy);
-        final position = box.localToGlobal(offset);
+  void selectWidget(CanvasWidget? widget, 
+      {Color color = const Color(0xffFF00B8) , double dx = 0, double dy = 0}) {
+    if (widget != null) {
+      _widget = widget;
+      final RenderBox box = (widget.key as GlobalKey)
+          .currentContext
+          ?.findRenderObject() as RenderBox;
+      final offset = Offset(dx, dy);
+      final position = box.localToGlobal(offset);
 
-        // ignore: invalid_use_of_protected_member
-        _state.setState(() {
-          _map["width"] = box.size.width;
-          _map["height"] = box.size.height;
-          _map["x"] = position.dx;
-          _map["y"] = position.dy;
-        });
-      }
+      // ignore: invalid_use_of_protected_member
+      _state.setState(() {
+        _map["width"] = box.size.width;
+        _map["height"] = box.size.height;
+        _map["x"] = position.dx;
+        _map["y"] = position.dy;
+        _map["color"] = color;
+      });
+    }
   }
 
   //returns the selected widget
@@ -86,7 +89,7 @@ class _SelectionIndicatiorState extends State<SelectionIndicatior> {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(
-                  color: const Color(0xffFF00B8),
+                  color: widget._map["color"] as Color,
                   width: 3,
                 ),
               ),

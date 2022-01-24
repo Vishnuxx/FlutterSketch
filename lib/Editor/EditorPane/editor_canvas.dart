@@ -60,7 +60,7 @@ class _EditorCanvasState extends State<EditorCanvas> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: double.infinity,
+      height: double.parse("300"),
       padding: const EdgeInsets.all(10),
       child: Column(
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
