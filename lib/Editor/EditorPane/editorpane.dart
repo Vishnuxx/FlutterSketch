@@ -137,7 +137,7 @@ class _EditorPaneState extends State<EditorPane> {
           widget.selectionIndicatior.setVisibility(false);
         },
         child: Container(
-            color: const Color(0xffEDECEC), child: Center(child: editorPane())),
+            color: const Color(0xfffff), child: Center(child: editorPane())),
       ),
     );
   }
@@ -180,24 +180,24 @@ class _EditorPaneState extends State<EditorPane> {
       padding: 5,
       width: EditorPane.WIDGETS_CONROLLER_PANEL_W,
       children: [
-        TextField(
-          controller:
-              TextEditingController(text: EditorPane.SCREEN_W.toString()),
-          onSubmitted: (value) {
-            setState(() {
-              EditorPane.SCREEN_W = double.parse(value);
-            });
-          },
-        ),
-        TextField(
-          controller:
-              TextEditingController(text: EditorPane.SCREEN_H.toString()),
-          onSubmitted: (value) {
-            setState(() {
-              EditorPane.SCREEN_H = double.parse(value);
-            });
-          },
-        ),
+        // TextField(
+        //   controller:
+        //       TextEditingController(text: EditorPane.SCREEN_W.toString()),
+        //   onSubmitted: (value) {
+        //     setState(() {
+        //       EditorPane.SCREEN_W = double.parse(value);
+        //     });
+        //   },
+        // ),
+        // TextField(
+        //   controller:
+        //       TextEditingController(text: EditorPane.SCREEN_H.toString()),
+        //   onSubmitted: (value) {
+        //     setState(() {
+        //       EditorPane.SCREEN_H = double.parse(value);
+        //     });
+        //   },
+        // ),
         ...?controllers ,
        
       ],

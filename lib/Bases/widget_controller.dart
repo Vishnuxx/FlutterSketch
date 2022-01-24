@@ -22,28 +22,41 @@ class _WidgetControllerState extends State<WidgetController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              isOpened = !isOpened;
-            });
-          },
-          child: Text(
-            widget.title,
-            style: const TextStyle(color: Colors.blue, fontSize: 15),
-          ),
-        ),
-        Container(
-            height: isOpened ? null: 0,
-            child: Column(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isOpened = !isOpened;
+              });
+            },
+            child: Row(
               children: [
-                ...?widget.controllers,
+                Expanded(
+                  child: Text(
+                    widget.title,
+                    style: const TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                ),
+
+               Icon(Icons.arrow_drop_down)
               ],
-            ))
-      ],
+            ),
+          ),
+          SizedBox(height:15.0),
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)) , color: const Color(0xffEBEBEB), ),
+              height: isOpened ? null: 0,
+              child: Column(
+                children: [
+                  ...?widget.controllers,
+                ],
+              ))
+        ],
+      ),
     );
   }
 }

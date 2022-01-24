@@ -42,12 +42,8 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
                 _props["width"] = double.parse(value);
               });
             },
-          )
-        ],
-      ),
-      WidgetController(
-        "height",
-        controllers: [
+          ),
+
           TextField(
             controller:
                 TextEditingController(text: _props["height"].toString()),
@@ -57,12 +53,7 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
                 _props["height"] = double.parse(value);
               });
             },
-          )
-        ],
-      ),
-      WidgetController(
-        "Color",
-        controllers: [
+          ),
           TextField(
             controller: TextEditingController(text: _props["color"].toString()),
             onSubmitted: (value) {
@@ -73,8 +64,155 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
               });
             },
           )
+
         ],
-      )
+      ),
+      
+      WidgetController(
+        "width",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["width"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["width"] = double.parse(value);
+              });
+            },
+          ),
+
+          TextField(
+            controller:
+                TextEditingController(text: _props["height"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["height"] = double.parse(value);
+              });
+            },
+          ),
+          TextField(
+            controller: TextEditingController(text: _props["color"].toString()),
+            onSubmitted: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["color"] = Color(int.parse(
+                    "0xff" + ((value).toString()).replaceAll('#', "")));
+              });
+            },
+          )
+
+        ],
+      ),WidgetController(
+        "width",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["width"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["width"] = double.parse(value);
+              });
+            },
+          ),
+
+          TextField(
+            controller:
+                TextEditingController(text: _props["height"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["height"] = double.parse(value);
+              });
+            },
+          ),
+          TextField(
+            controller: TextEditingController(text: _props["color"].toString()),
+            onSubmitted: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["color"] = Color(int.parse(
+                    "0xff" + ((value).toString()).replaceAll('#', "")));
+              });
+            },
+          )
+
+        ],
+      ),
+
+      WidgetController(
+        "width",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["width"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["width"] = double.parse(value);
+              });
+            },
+          ),
+
+          TextField(
+            controller:
+                TextEditingController(text: _props["height"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["height"] = double.parse(value);
+              });
+            },
+          ),
+          TextField(
+            controller: TextEditingController(text: _props["color"].toString()),
+            onSubmitted: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["color"] = Color(int.parse(
+                    "0xff" + ((value).toString()).replaceAll('#', "")));
+              });
+            },
+          )
+
+        ],
+      ),
+
+      WidgetController(
+        "width",
+        controllers: [
+          TextField(
+            controller: TextEditingController(text: _props["width"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["width"] = double.parse(value);
+              });
+            },
+          ),
+
+          TextField(
+            controller:
+                TextEditingController(text: _props["height"].toString()),
+            onChanged: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["height"] = double.parse(value);
+              });
+            },
+          ),
+          TextField(
+            controller: TextEditingController(text: _props["color"].toString()),
+            onSubmitted: (value) {
+              // ignore: invalid_use_of_protected_member
+              _state.setState(() {
+                _props["color"] = Color(int.parse(
+                    "0xff" + ((value).toString()).replaceAll('#', "")));
+              });
+            },
+          )
+
+        ],
+      ),
     ];
   }
 
