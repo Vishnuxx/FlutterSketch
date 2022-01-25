@@ -21,7 +21,7 @@ class EditorPane extends StatefulWidget {
   final _state = _EditorPaneState();
 
   // ignore: constant_identifier_names
-  static const double WIDGETS_PANEL_W = 250;
+  static const double WIDGETS_PANEL_W = 300;
   // ignore: constant_identifier_names
   static const double WIDGETS_CONROLLER_PANEL_W = 250;
   // ignore: constant_identifier_names
@@ -83,28 +83,33 @@ class _EditorPaneState extends State<EditorPane> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
+      appBar: AppBar(centerTitle: false , title: Text("FlutterSketch" ,  style: TextStyle(color: Color(0xff70839E) , fontWeight: FontWeight.bold),) , elevation: 0, backgroundColor: Color(0xffF2F3F4),),
+        body: Container(
+          color: Colors.white,
+          child: Stack(
       children: [
-        Row(children: [
-          graph(),
-          widgetPanel(),
-          Expanded(
-            flex: 1,
-            child: canvasPanel(),
-          ),
-          controlPane()
-        ]),
-        selectionIndicatior,
+          Row(children: [
+            widgetPanel(),
+            graph(),
+            
+            Expanded(
+              flex: 1,
+              child: canvasPanel(),
+            ),
+            controlPane()
+          ]),
+          selectionIndicatior,
 
-        SizedBox(
-            width: 0,
-            height: 0,
-            child: Column(
-              children: hiddenWidgets,
-            )), //used to store widgets temporarily
-        shadow
+          SizedBox(
+              width: 0,
+              height: 0,
+              child: Column(
+                children: hiddenWidgets,
+              )), //used to store widgets temporarily
+          shadow
       ],
-    ));
+    ),
+        ));
   }
 
 /*
@@ -125,6 +130,9 @@ class _EditorPaneState extends State<EditorPane> {
           setState(() {
             controllers = null;
           });
+          previousSelectedWidget = currentDraggingWidget;
+          currentDraggingWidget = null;
+          selectWidget(currentDraggingWidget);
 
           selectionIndicatior.setVisibility(false);
         },
@@ -142,10 +150,11 @@ class _EditorPaneState extends State<EditorPane> {
       false,
       key: GlobalKey(),
     );
-    return SizedBox(
+    return Container(
         width: EditorPane.SCREEN_W,
         height: EditorPane.SCREEN_H,
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(
               title: const Text("New Flutter Project"),
@@ -238,7 +247,7 @@ class _EditorPaneState extends State<EditorPane> {
       margin: const EdgeInsets.all(10),
       child: Text(
         name,
-        style: const TextStyle(color: Colors.blue, fontSize: 15),
+        style: const TextStyle(color: Colors.blue, fontSize: 14),
       ),
     );
   }
@@ -249,7 +258,11 @@ class _EditorPaneState extends State<EditorPane> {
       isDraggable: true,
       path: imgsrc,
       label: label,
-      onDragStart: () {},
+      onDragStart: () {
+        previousSelectedWidget = currentDraggingWidget;
+        previousSelectedWidget?.unselect();
+        currentDraggingWidget = null;
+      },
       onDragMove: (details) {
         onDragMove(details, true);
       },

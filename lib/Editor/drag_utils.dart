@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
@@ -89,7 +91,15 @@ class DragUtils {
                  data.canvasWidget = child;
             DragUtils.depth(data, location, data.canvasWidget!,
                 data.childCWHolder!, isForSelection);
-              }
+             }else{
+              
+               CanvasWidget? w = fw.children?.elementAt(0);
+                 data.canvasWidget = child;
+                   DragUtils.depth(data, location, w! ,
+                data.childCWHolder!, isForSelection);
+             
+          
+             }
             }
           }
         } else {

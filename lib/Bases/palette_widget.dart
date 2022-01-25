@@ -49,17 +49,13 @@ class PaletteWidget extends StatelessWidget {
     return Container(
       width: 50.0,
       height: 50.0,
-      margin: const EdgeInsets.only(left: 0, top: 2, right: 0, bottom: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          // border: Border.all(
-          //   color: Colors.black12,
-          //   width: 1,
-          // ),
-          color: Colors.white54),
+         
+       ),
       clipBehavior: Clip.hardEdge,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           
@@ -70,16 +66,12 @@ class PaletteWidget extends StatelessWidget {
           Image.asset(
             path,
             fit: BoxFit.fill,
-            width: 30.0,
-            height: 30.0,
+            width: 25.0,
+            height: 25,
             scale: 2,
           ),
-          // const SizedBox(
-          //   width: 10,
-          //   child: null,
-          // ),
-          Expanded(
-              child: Text(label , style: const TextStyle(fontSize: 12 , color: Colors.black54) , overflow: TextOverflow.ellipsis))
+         
+          Text(label , style: const TextStyle(fontSize: 10 , color: Color(0xff666BB4)) , overflow: TextOverflow.ellipsis)
         ],
       ),
     );

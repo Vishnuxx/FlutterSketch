@@ -16,6 +16,7 @@ class CanvasWidget extends StatefulWidget {
   late void Function(DragUpdateDetails details)? dragMove;
   late void Function(DraggableDetails details)? dragEnd;
   late void Function()? dragCompleted;
+
   CanvasWidget(this.widget, this.isDraggableAndSelectable,
       {Key? key,
       this.onSelect,
@@ -39,18 +40,44 @@ class CanvasWidget extends StatefulWidget {
     });
   }
 
+  //for showing outlines
   void showWireframe(bool value) {
     _state.setState(() {
       _wireframe = value;
     });
   }
 
-  void setParent(CanvasWidget cv) {
+  //sets this widget"s parent
+  void setParent(CanvasWidget? cv) {
     _parent = cv;
   }
 
-  CanvasWidget? parent() {
+  //get its parent
+  CanvasWidget? getParent() {
     return _parent;
+  }
+
+  //adds child to this widget
+  void addChild(CanvasWidget child) {
+    if (!widget!.isViewGroup!) {
+      throw "This widget is not a viewgroup";
+    }
+    if (child.getParent() != null) {
+      child.setParent(this);
+      widget?.children!.add(child);
+    } else {
+      child.getParent()?.removeChild(child);
+      widget?.children!.add(child);
+    }
+  }
+
+  CanvasWidget? removeChild(CanvasWidget child) {
+    if (!widget!.isViewGroup!) {
+      throw "This widget is not a viewgroup";
+    }
+    widget?.children?.remove(child);
+    child.setParent(null);
+    return child;
   }
 
   @override

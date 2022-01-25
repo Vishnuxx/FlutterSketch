@@ -63,6 +63,7 @@ class _EditorCanvasState extends State<EditorCanvas> {
       height: double.infinity,
       padding: const EdgeInsets.all(10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
         ,
       ),

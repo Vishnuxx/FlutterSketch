@@ -32,7 +32,10 @@ class _ElementTreeGraphState extends State<ElementTreeGraph> {
         padding: EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: widget.nodes!,
+          children: [
+            Text("Tree Graph"),
+           ...widget.nodes!,
+          ]
         ));
   }
 

@@ -8,9 +8,9 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
   final State _state = _FSColumnState();
 
   final Map _props = {
-    "width": 200,
+    "width": double.infinity,
     "height": 100,
-    "color": const Color(0xff3FC5FF)
+    "color": null
   };
 
   @override
