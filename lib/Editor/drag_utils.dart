@@ -53,30 +53,6 @@ class DragUtils {
     }
   }
 
-  // static void depth(TraversalData? data, Offset location, Widget widget,
-  //     CWHolder parentList, bool isForSelection) {
-  //   // TraversalData? data = TraversalData();
-
-  //   CanvasWidget? canvas;
-  //   if (widget.runtimeType == EditorPane) {
-  //     canvas = (widget as EditorPane).root;
-  //     data?.parentCWHolder = parentList;
-  //     data?.childCWHolder = (widget as EditorPane).root?.widget?.children;
-  //   } else {
-  //     canvas = widget as CanvasWidget;
-  //     data?.parentCWHolder = parentList;
-  //     data?.childCWHolder = canvas.widget!.children;
-  //   }
-  //   data?.canvasWidget = canvas;
-
-  //   for (CanvasWidget child in data!.childCWHolder!.getChildren()) {
-  //     if (DragUtils.isHitting(location, child)) {
-  //       data.canvasWidget = child;
-  //       FlutterSketchWidget fw = child.widget!;
-  //       DragUtils.depth(data, location, data.canvasWidget! , data.childCWHolder! , isForSelection);
-  //     }
-  //   }
-  // }
 
   static void depth(TraversalData? data, Offset location, Widget widget,
       CWHolder parentList, bool isForSelection) {

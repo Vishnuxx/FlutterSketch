@@ -10,7 +10,7 @@ class FSContainer extends StatefulWidget implements FlutterSketchWidget {
   final Map _props = {
     "width": 200,
     "height": 100,
-    "color": const Color(0xff3FC5FF)
+    "color": null//const Color(0xff3FC5FF)
   };
 
   @override

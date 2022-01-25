@@ -72,7 +72,7 @@ class PaletteWidget extends StatelessWidget {
             fit: BoxFit.fill,
             width: 30.0,
             height: 30.0,
-            scale: 0.8,
+            scale: 2,
           ),
           // const SizedBox(
           //   width: 10,

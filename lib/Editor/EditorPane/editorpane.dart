@@ -11,6 +11,7 @@ import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 import 'package:flutteruibuilder/Bases/palette_widget.dart';
 import 'package:flutteruibuilder/Controls/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/element_treegraph.dart';
 import 'package:flutteruibuilder/Editor/widgets_panel.dart';
 import 'package:flutteruibuilder/Widgets/fs_column.dart';
 import 'package:flutteruibuilder/Widgets/fs_container.dart';
@@ -29,11 +30,8 @@ class EditorPane extends StatefulWidget {
   static double SCREEN_H = 550;
 
   CWHolder? widgets;
-  SelectionIndicatior selectionIndicatior = SelectionIndicatior();
 
   CanvasWidget? root; //this is the root view of the droppable area
-
-  WidgetsPalletteList pallettelist = WidgetsPalletteList();
 
   EditorPane({Key? key}) : super(key: key) {
     widgets = CWHolder([], _state);
@@ -52,7 +50,9 @@ class EditorPane extends StatefulWidget {
 }
 
 class _EditorPaneState extends State<EditorPane> {
+  SelectionIndicatior selectionIndicatior = SelectionIndicatior();
   CanvasWidget? currentDraggingWidget;
+  CanvasWidget? previousSelectedWidget;
   bool? isSelected;
   Offset? pointerLocation;
   int?
@@ -66,13 +66,36 @@ class _EditorPaneState extends State<EditorPane> {
   TraversalData? dragData; //data of the dragging element
   TraversalData? dropData; //data of the drop listening element
 
+  ElementTreeGraph? tree;
+
+  @override
+  void initState() {
+    super.initState();
+    tree = ElementTreeGraph(
+      width: 200,
+      onWidgetSelected: (wid) {
+        selectWidget(wid);
+        //selectionIndicatior.selectWidget(wid);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
       children: [
-        Row(children: [widgetPanel(), canvasPanel(), controlPane()]),
-        widget.selectionIndicatior,
+        Row(children: [
+          graph(),
+          widgetPanel(),
+          Expanded(
+            flex: 1,
+            child: canvasPanel(),
+          ),
+          controlPane()
+        ]),
+        selectionIndicatior,
+
         SizedBox(
             width: 0,
             height: 0,
@@ -88,100 +111,52 @@ class _EditorPaneState extends State<EditorPane> {
   ______________UI Components______________
 */
 
-  Widget widgetPanel() {
-
-    return WidgetPanel(
-      EditorPane.WIDGETS_PANEL_W,
-      children: [
-        label("Widgets"),
-          GridView.count(crossAxisCount: 3, 
-          physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-      shrinkWrap: true, 
-      children: [
-          draggablePallette("TextWidget", "/pallette_icons/text.png"),
-          draggablePallette("Container", "/pallette_icons/container.png"),
-          draggablePallette("IconButton", "/pallette_icons/iconbutton.png"),
-          draggablePallette("Imageview", "/pallette_icons/imageview.png"),
-          draggablePallette("progress bar", "/pallette_icons/progress.png"),
-          draggablePallette("seekbar", "/pallette_icons/seekbar.png"),
-          draggablePallette("padding", "/pallette_icons/padding.png"),
-          draggablePallette("sizedbox", "/pallette_icons/sizedbox.png"),     
-          ],),
-          
-          label("Layouts"),
-          GridView.count(crossAxisCount: 3, 
-          physics: NeverScrollableScrollPhysics(), // to disable GridView's scrolling
-      shrinkWrap: true, 
-      children: [
-          draggablePallette("Row", "/pallette_icons/container.png"),
-          draggablePallette("Column", "/pallette_icons/container.png"),
-          draggablePallette("Container", "/pallette_icons/container.png"),
-          draggablePallette("Wrap", "/pallette_icons/container.png"),
-           draggablePallette("Stack", "/pallette_icons/container.png"),
-           ],),
-      ],
-    );
-  }
-
-  Widget label(String name) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(10),
-      child: Text(
-        name,
-        style: const TextStyle(color: Colors.blue, fontSize: 15),
-      ),
-    );
+  ElementTreeGraph graph() {
+    return tree!;
   }
 
 //canvas for showing the device
   Widget canvasPanel() {
-    return Expanded(
-      flex: 4,
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
       child: GestureDetector(
         onTap: () {
           setState(() {
             controllers = null;
           });
 
-          widget.selectionIndicatior.setVisibility(false);
+          selectionIndicatior.setVisibility(false);
         },
-        child: Container(
-            color: const Color(0xfffff), child: Center(child: editorPane())),
+        child: Center(child: editingDevice()),
       ),
     );
   }
 
   //drop zone
-  Widget editorPane() {
-    return SizedBox(
-      width: EditorPane.SCREEN_W,
-      height: EditorPane.SCREEN_H,
-      child: deviceScreen(),
-    );
-  }
-
-//drop zone area
-  Widget deviceScreen() {
+  Widget editingDevice() {
     EditorCanvas fs = EditorCanvas();
     fs.children = widget.widgets;
     widget.root = CanvasWidget(
       fs,
       false,
       key: GlobalKey(),
-    ); //key: GlobalKey(), children: widget.widgets?.getChildren());
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("New Flutter Project"),
-        ),
-        body: DragTarget(
-          builder: (context, candidateData, rejectedData) {
-            return widget.root!;
-          },
-        ),
-      ),
     );
+    return SizedBox(
+        width: EditorPane.SCREEN_W,
+        height: EditorPane.SCREEN_H,
+        child: MaterialApp(
+          home: Scaffold(
+            appBar: AppBar(
+              title: const Text("New Flutter Project"),
+            ),
+            body: DragTarget(
+              builder: (context, candidateData, rejectedData) {
+                return widget.root!;
+              },
+            ),
+          ),
+        ));
   }
 
 //pane to show widget controls
@@ -218,6 +193,56 @@ class _EditorPaneState extends State<EditorPane> {
     );
   }
 
+  Widget widgetPanel() {
+    return WidgetPanel(
+      EditorPane.WIDGETS_PANEL_W,
+      children: [
+        label("Widgets"),
+        GridView.count(
+          crossAxisCount: 3,
+          physics:
+              NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+          shrinkWrap: true,
+          children: [
+            draggablePallette("TextWidget", "/pallette_icons/text.png"),
+            draggablePallette("Container", "/pallette_icons/container.png"),
+            draggablePallette("IconButton", "/pallette_icons/iconbutton.png"),
+            draggablePallette("Imageview", "/pallette_icons/imageview.png"),
+            draggablePallette("progress bar", "/pallette_icons/progress.png"),
+            draggablePallette("seekbar", "/pallette_icons/seekbar.png"),
+            draggablePallette("padding", "/pallette_icons/padding.png"),
+            draggablePallette("sizedbox", "/pallette_icons/sizedbox.png"),
+          ],
+        ),
+        label("Layouts"),
+        GridView.count(
+          crossAxisCount: 3,
+          physics:
+              NeverScrollableScrollPhysics(), // to disable GridView's scrolling
+          shrinkWrap: true,
+          children: [
+            draggablePallette("Row", "/pallette_icons/container.png"),
+            draggablePallette("Column", "/pallette_icons/container.png"),
+            draggablePallette("Container", "/pallette_icons/container.png"),
+            draggablePallette("Wrap", "/pallette_icons/container.png"),
+            draggablePallette("Stack", "/pallette_icons/container.png"),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget label(String name) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(10),
+      child: Text(
+        name,
+        style: const TextStyle(color: Colors.blue, fontSize: 15),
+      ),
+    );
+  }
+
 //pallette widgets
   Widget draggablePallette(String label, String imgsrc) {
     return PaletteWidget(
@@ -239,6 +264,12 @@ class _EditorPaneState extends State<EditorPane> {
         //  });
       },
     );
+  }
+
+  //used to select widgets
+  void selectWidget(CanvasWidget? cwid) {
+    previousSelectedWidget?.unselect();
+    cwid?.select();
   }
 
   //this widget is generated everytime when user drags widget from pallette
@@ -272,7 +303,7 @@ class _EditorPaneState extends State<EditorPane> {
 
       //onCompleted
       dragCompleted: () {
-        // widget.selectionIndicatior.setVisibility(false);
+        // selectionIndicatior.setVisibility(false);
       },
     );
 
@@ -293,12 +324,15 @@ class _EditorPaneState extends State<EditorPane> {
           (cv) {
         isSelected = true;
         dragData = cv;
-        controllers = null;
-        widget.selectionIndicatior.setVisibility(true);
-        widget.selectionIndicatior
-            .selectWidget(cv.canvasWidget, color: Color(0xffFF5C00));
-        controllers = cv.canvasWidget?.widget?.controllers;
+        previousSelectedWidget = currentDraggingWidget;
         currentDraggingWidget = cv.canvasWidget;
+        controllers = null;
+        // selectionIndicatior.setVisibility(true);
+        // selectionIndicatior.selectWidget(cv.canvasWidget,
+        //     color: Color(0xffFF5C00));
+        selectWidget(currentDraggingWidget);
+        controllers = cv.canvasWidget?.widget?.controllers;
+
         print(cv.parentCWHolder!.getChildren());
         cv.parentCWHolder!.show();
       },
@@ -306,9 +340,6 @@ class _EditorPaneState extends State<EditorPane> {
           () {
         print("fail");
       });
-
-      //print(dragData?.canvasWidget);
-      // print()
     });
   }
 
@@ -324,9 +355,10 @@ class _EditorPaneState extends State<EditorPane> {
             hiddenWidgets.add(currentDraggingWidget!);
           });
           controllers = null;
-          widget.selectionIndicatior
-              .selectWidget(dragData?.canvasWidget, color: Color(0xff0082FB));
-          widget.selectionIndicatior.setVisibility(false);
+          // selectionIndicatior.selectWidget(dragData?.canvasWidget,
+          //     color: Color(0xff0082FB));
+          // selectionIndicatior.setVisibility(false);
+          selectWidget(currentDraggingWidget);
         }
       }
     }
@@ -339,14 +371,15 @@ class _EditorPaneState extends State<EditorPane> {
           widget.widgets!, false, details.globalPosition, widget, (data) {
         //hasEntered
         dropData = data;
-        widget.selectionIndicatior
-            .selectWidget(data.canvasWidget, color: Color(0xff0082FB));
-        widget.selectionIndicatior.setVisibility(true);
+        selectionIndicatior.selectWidget(data.canvasWidget,
+            color: Color(0xff0082FB));
+        selectionIndicatior.setVisibility(true);
+        selectWidget(data.canvasWidget);
       }, () {
         //hasNotEntered
 
         dropData?.canvasWidget = null;
-        widget.selectionIndicatior.setVisibility(false);
+        selectionIndicatior.setVisibility(false);
       });
     } else {
       //is not from pallette
@@ -358,14 +391,14 @@ class _EditorPaneState extends State<EditorPane> {
               widget.widgets!, false, details.globalPosition, widget, (data) {
             //hasEntered
             dropData = data;
-            widget.selectionIndicatior
-                .selectWidget(data.canvasWidget, color: Color(0xff0082FB));
-            widget.selectionIndicatior.setVisibility(true);
+            selectionIndicatior.selectWidget(data.canvasWidget,
+                color: Color(0xff0082FB));
+            selectionIndicatior.setVisibility(true);
           }, () {
             //hasNotEntered
 
             dropData?.canvasWidget = null;
-            widget.selectionIndicatior.setVisibility(false);
+            selectionIndicatior.setVisibility(false);
           });
         }
       }
@@ -376,7 +409,7 @@ class _EditorPaneState extends State<EditorPane> {
     if (isFromPallette) {
       if (dropData?.canvasWidget != null) {
         dropData?.childCWHolder?.add(currentDraggingWidget!);
-        //widget.selectionIndicatior.selectWidget(currentDraggingWidget!);
+        //selectWidget(currentDraggingWidget);
       }
     } else {
       //is not from pallette
@@ -404,5 +437,7 @@ class _EditorPaneState extends State<EditorPane> {
         });
       }
     }
+    selectionIndicatior.selectWidget(null);
+    tree?.refresh(widget.widgets?.getChildren());
   }
 }

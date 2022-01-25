@@ -5,11 +5,11 @@ import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
 class SelectionIndicatior extends StatefulWidget {
   final _state = _SelectionIndicatiorState();
   Widget? _widget;
-  bool _isVisible = false;
+  bool _isVisible = true;
   Map _map = {
     "isVisible": true,
-    "height": 0.0,
-    "width": 0.0,
+    "height": 10.0,
+    "width": 30.0,
     "x": 0.0,
     "y": 0.0,
     "color": const Color(0xffFF00B8)

@@ -17,7 +17,7 @@ class _WidgetPanelState extends State<WidgetPanel> {
       child: Container(
           width: widget.width,
           decoration: BoxDecoration(
-              color: const Color(0xffEDECEC),
+              color: const Color(0xfffff),
               borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.all(10),
           child: ListView(children: [...?widget.children])),

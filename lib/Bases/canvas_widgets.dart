@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
 
 // ignore: must_be_immutable
-class CanvasWidget extends StatelessWidget {
-  
-  bool? isDraggableAndSelectable;
+class CanvasWidget extends StatefulWidget {
+  _CanvasWidgetState _state = _CanvasWidgetState();
+  bool _isSelected = false;
+  bool _wireframe = true;
+  CanvasWidget? _parent;
 
+  GlobalKey _gkey = GlobalKey();
+  bool? isDraggableAndSelectable;
   late FlutterSketchWidget? widget;
   late void Function(TapDownDetails details)? onSelect;
   late void Function()? dragStart;
@@ -21,23 +25,73 @@ class CanvasWidget extends StatelessWidget {
       this.dragCompleted})
       : super(key: key);
 
+  //shows selection borders
+  void select() {
+    _state.setState(() {
+      _isSelected = true;
+    });
+  }
+
+  //hides selection borders
+  void unselect() {
+    _state.setState(() {
+      _isSelected = false;
+    });
+  }
+
+  void showWireframe(bool value) {
+    _state.setState(() {
+      _wireframe = value;
+    });
+  }
+
+  void setParent(CanvasWidget cv) {
+    _parent = cv;
+  }
+
+  CanvasWidget? parent() {
+    return _parent;
+  }
+
+  @override
+  State<CanvasWidget> createState() => _state;
+}
+
+class _CanvasWidgetState extends State<CanvasWidget> {
   @override
   Widget build(BuildContext context) {
-    if (isDraggableAndSelectable!) {
+    if (widget.isDraggableAndSelectable!) {
       return Draggable(
-        key: GlobalKey(),
+        key: widget._gkey,
         child: GestureDetector(
-          child: Container(color: Colors.amber, child: IgnorePointer(child: widget!)),
-          onTapDown: (TapDownDetails details) => onSelect!(details),
-        ),
+            child: Container(
+              child: IgnorePointer(child: widget.widget!),
+              foregroundDecoration:
+                  BoxDecoration(border: _borderAndWireframe()),
+            ),
+            onTapDown: (TapDownDetails details) {
+              widget.onSelect!(details);
+            }),
         feedback: Container(),
-        onDragStarted: () => dragStart!(),
-        onDragUpdate: dragMove,
-        onDragEnd: dragEnd,
-        onDragCompleted: dragCompleted,
+        onDragStarted: () => widget.dragStart!(),
+        onDragUpdate: widget.dragMove,
+        onDragEnd: widget.dragEnd,
+        onDragCompleted: widget.dragCompleted,
       );
     } else {
-      return Container( child: widget!);
+      return Container(child: widget.widget!);
     }
+  }
+
+  Border? _borderAndWireframe() {
+    Border? border;
+    if (widget._wireframe) {
+      border = Border.all(color: Color(0xff000000), width: 1);
+    }
+
+    if (widget._isSelected) {
+      border = Border.all(color: Color(0xffFF5C00), width: 3);
+    }
+    return border;
   }
 }

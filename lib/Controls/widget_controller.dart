@@ -41,8 +41,8 @@ class _WidgetControllerState extends State<WidgetController> {
                     style: const TextStyle(color: Colors.blue, fontSize: 16),
                   ),
                 ),
-
-               Icon(Icons.arrow_drop_down)
+              RotatedBox(quarterTurns: isOpened? 90 : 0 , child: Icon(Icons.arrow_drop_down ,),)
+               
               ],
             ),
           ),
