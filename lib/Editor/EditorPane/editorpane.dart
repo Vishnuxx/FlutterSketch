@@ -90,8 +90,8 @@ class _EditorPaneState extends State<EditorPane> {
             style: TextStyle(
                 color: Color(0xff70839E), fontWeight: FontWeight.bold),
           ),
-          elevation: 0,
-          backgroundColor: Color(0xffF2F3F4),
+          elevation: 0.8,
+          backgroundColor: Color(0xffffffff),
         ),
         body: Container(
           color: Colors.white,
