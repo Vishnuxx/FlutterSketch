@@ -21,11 +21,10 @@ class _WidgetPanelState extends State<WidgetPanel> {
               
                 border: Border(right: BorderSide(color: Colors.black12 , width: 0.5)),
             ),
-            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
                 Padding(
-                  padding:  EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(10),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,9 +35,11 @@ class _WidgetPanelState extends State<WidgetPanel> {
                   ],),
                 ),
                 SizedBox(height:10),
-                ListView(
-                  shrinkWrap: true,
-                  children: [...?widget.children]),
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [...?widget.children]),
+                ),
               ],
             )),
       ],
@@ -46,11 +47,11 @@ class _WidgetPanelState extends State<WidgetPanel> {
   }
 
   Widget sideNavigationBar() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Container(
+    return Container(
+      decoration: BoxDecoration(border: Border(right: BorderSide(width: 0.8, color:  Colors.black12 ))),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Icon(Icons.ac_unit_outlined , color: Color(0xffF39423),) , 

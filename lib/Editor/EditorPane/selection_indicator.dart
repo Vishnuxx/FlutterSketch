@@ -52,7 +52,7 @@ class SelectionIndicatior extends StatefulWidget {
           .currentContext
           ?.findRenderObject() as RenderBox;
       final offset = Offset(dx, dy);
-      final position = box.localToGlobal(offset);
+      final position = box.globalToLocal(offset);
 
       // ignore: invalid_use_of_protected_member
       _state.setState(() {

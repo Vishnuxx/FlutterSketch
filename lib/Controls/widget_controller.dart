@@ -38,7 +38,7 @@ class _WidgetControllerState extends State<WidgetController> {
                 Expanded(
                   child: Text(
                     widget.title,
-                    style: const TextStyle(color: Colors.blue, fontSize: 16),
+                    style:  TextStyle(color: Color(0xff666BB4), fontSize: 16 , fontWeight: isOpened? FontWeight.bold : FontWeight.normal),
                   ),
                 ),
               RotatedBox(quarterTurns: isOpened? 90 : 0 , child: Icon(Icons.arrow_drop_down ,),)
@@ -48,7 +48,7 @@ class _WidgetControllerState extends State<WidgetController> {
           ),
           SizedBox(height:15.0),
           Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)) , color: const Color(0xffDEDEDE), ),
+            decoration: BoxDecoration(border:Border(bottom: BorderSide(width: 0.5, color:  Colors.black12 )) , color: const Color(0xffDEDEDE), ),
               height: isOpened ? null: 0,
               child: Column(
                 children: [
