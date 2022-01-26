@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
-import 'package:flutteruibuilder/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Bases/traversal_data.dart';
-import 'package:flutteruibuilder/Controls/controls_pane.dart';
+import 'package:flutteruibuilder/Editor/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
+import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
+import 'package:flutteruibuilder/Editor/UIPanels/controls_pane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
-import 'package:flutteruibuilder/Editor/drag_utils.dart';
+import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
-import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
-import 'package:flutteruibuilder/Bases/palette_widget.dart';
-import 'package:flutteruibuilder/Controls/widget_controller.dart';
-import 'package:flutteruibuilder/Editor/element_treegraph.dart';
-import 'package:flutteruibuilder/Editor/widgets_panel.dart';
-import 'package:flutteruibuilder/Widgets/fs_column.dart';
+import 'package:flutteruibuilder/Editor/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/palette_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/UIPanels/element_treegraph.dart';
+import 'package:flutteruibuilder/Editor/UIPanels/widgets_panel.dart';
 import 'package:flutteruibuilder/Widgets/fs_container.dart';
 
 // ignore: must_be_immutable
@@ -52,7 +51,7 @@ class EditorPane extends StatefulWidget {
 class _EditorPaneState extends State<EditorPane> {
   SelectionIndicatior selectionIndicatior = SelectionIndicatior();
   CanvasWidget? currentDraggingWidget;
-  CanvasWidget? previousSelectedWidget;
+
   bool? isSelected;
   Offset? pointerLocation;
   int?
@@ -71,6 +70,7 @@ class _EditorPaneState extends State<EditorPane> {
   @override
   void initState() {
     super.initState();
+
     tree = ElementTreeGraph(
       width: 200,
       onWidgetSelected: (wid) {
@@ -90,8 +90,8 @@ class _EditorPaneState extends State<EditorPane> {
             style: TextStyle(
                 color: Color(0xff70839E), fontWeight: FontWeight.bold),
           ),
-          elevation: 0.8,
-          backgroundColor: Color(0xffffffff),
+          elevation: 0,
+          backgroundColor: Color(0xffF2F3F4),
         ),
         body: Container(
           color: Colors.white,
@@ -137,11 +137,9 @@ class _EditorPaneState extends State<EditorPane> {
             setState(() {
               controllers = null;
             });
-            previousSelectedWidget = currentDraggingWidget;
+            selectWidget(null);
+
             currentDraggingWidget = null;
-            selectWidget(currentDraggingWidget);
-    
-            selectionIndicatior.setVisibility(false);
           },
           child: Center(child: editingDevice()),
         ),
@@ -267,8 +265,7 @@ class _EditorPaneState extends State<EditorPane> {
       path: imgsrc,
       label: label,
       onDragStart: () {
-        previousSelectedWidget = currentDraggingWidget;
-       // previousSelectedWidget?.unselect();
+        // previousSelectedWidget?.unselect();
         currentDraggingWidget = null;
       },
       onDragMove: (details) {
@@ -289,15 +286,13 @@ class _EditorPaneState extends State<EditorPane> {
 
   //used to select widgets
   void selectWidget(CanvasWidget? cwid) {
-   // previousSelectedWidget?.unselect();
-    cwid?.select();
-  }
-
-  //used to unselect widgets
-  void unselectWidget(CanvasWidget? cwid) {
-    //if(previousSelectedWidget.)
-    //previousSelectedWidget?.unselect();
-    cwid?.unselect();
+    for (int i = 0; i < widget.widgets!.length(); ++i) {
+      if (cwid != null && cwid == widget.widgets?.getChildren()[i]) {
+        cwid.select();
+      } else {
+        widget.widgets?.getChildren()[i].unselect();
+      }
+    }
   }
 
   //this widget is generated everytime when user drags widget from pallette
@@ -353,16 +348,14 @@ class _EditorPaneState extends State<EditorPane> {
         isSelected = true;
         dragData = cv;
         controllers = null;
-        previousSelectedWidget = currentDraggingWidget;
+
         currentDraggingWidget = cv.canvasWidget;
 
-        selectionIndicatior.setVisibility(true);
-        selectionIndicatior.selectWidget(cv.canvasWidget,
-            color: Color(0xff303030));
+        // selectionIndicatior.setVisibility(true);
+        // selectionIndicatior.selectWidget(cv.canvasWidget,
+        //     color: Color(0xffFF5C00));
         selectWidget(currentDraggingWidget);
-        controllers = cv.canvasWidget?.widget?.controllers;
-
-        cv.parentCWHolder!.show();
+        controllers = currentDraggingWidget?.widget?.controllers;
       },
           //onFail
           () {});
@@ -375,16 +368,18 @@ class _EditorPaneState extends State<EditorPane> {
       //is not from pallette
       if (isSelected!) {
         if (dragData != null) {
+          currentDraggingWidget = dragData?.canvasWidget;
           shadow.setSizeOf(dragData!.canvasWidget!);
+
+          //removes the widget from its parent
           dragData?.parentCWHolder?.remove(currentDraggingWidget!);
+          //stores the wid=get inside hiddden widgets
           setState(() {
             hiddenWidgets?.add(currentDraggingWidget!);
           });
           controllers = null;
-          // selectionIndicatior.selectWidget(dragData?.canvasWidget,
-          //     color: Color(0xff0082FB));
-          // selectionIndicatior.setVisibility(false);
-          //selectWidget(currentDraggingWidget);
+
+          // selectWidget(currentDraggingWidget);
         }
       }
     }
@@ -393,20 +388,12 @@ class _EditorPaneState extends State<EditorPane> {
   void onDragMove(DragUpdateDetails details, bool isFromPallette) {
     if (isFromPallette) {
       DragUtils.findWidgetsAt(
-          widget.widgets!, false, details.globalPosition, widget, 
-           //hasEntered
+          widget.widgets!, false, details.globalPosition, widget,
+          //hasEntered
           (data) {
-            
-            previousSelectedWidget = dropData?.canvasWidget;
-            dropData = data;
-            selectWidget(data.canvasWidget);
-            print("entered");
-          }, 
-          
-          () {
-            print("not entered");
-          }
-      );
+        dropData = data;
+        selectWidget(dropData?.canvasWidget!);
+      }, () {});
     } else {
       //is not from pallette
       if (isSelected!) {
@@ -416,14 +403,11 @@ class _EditorPaneState extends State<EditorPane> {
           DragUtils.findWidgetsAt(
               widget.widgets!, false, details.globalPosition, widget, (data) {
             //hasEntered
-            previousSelectedWidget = dropData?.canvasWidget;
+
             dropData = data;
-            selectWidget(data.canvasWidget);
+            selectWidget(dropData?.canvasWidget);
           }, () {
             //hasNotEntered
-            //unselectWidget(previousSelectedWidget);
-
-            // dropData?.canvasWidget = null;
           });
         }
       }

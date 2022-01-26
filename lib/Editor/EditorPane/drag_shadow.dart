@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/canvas_widgets.dart';
 
 // ignore: must_be_immutable
 class DragShadow extends StatefulWidget {

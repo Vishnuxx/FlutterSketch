@@ -1,7 +1,7 @@
 /* A special kind of List<CanvasWidget> used to store canvas widgets and update the state on list operations*/
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/canvas_widgets.dart';
 
 class CWHolder {
   final List<CanvasWidget> _list;

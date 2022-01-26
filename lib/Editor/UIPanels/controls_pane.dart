@@ -15,7 +15,7 @@ class ControlsPane extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-              decoration: BoxDecoration(color: Color(0xffffffff) , border: Border(left: BorderSide(width: 0.5, color:  Colors.black12 ))),
+              decoration: BoxDecoration( border: Border(left: BorderSide(width: 0.5, color:  Color(0xff666BB4) ))),
               padding: EdgeInsets.all(padding!),
               child: ListView(
                 //crossAxisAlignment: CrossAxisAlignment.start,

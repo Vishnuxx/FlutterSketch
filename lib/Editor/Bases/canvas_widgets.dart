@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/fsketch_widget.dart';
 
 // ignore: must_be_immutable
 class CanvasWidget extends StatefulWidget {

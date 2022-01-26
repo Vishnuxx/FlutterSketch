@@ -19,7 +19,7 @@ class _WidgetPanelState extends State<WidgetPanel> {
             width: widget.width,
             decoration: BoxDecoration(
               
-                border: Border(right: BorderSide(color: Colors.black12 , width: 0.5)),
+                border: Border(right: BorderSide(color: Color(0xff666BB4) , width: 0.5)),
             ),
             child: Column(
               children: [

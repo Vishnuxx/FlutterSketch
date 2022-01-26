@@ -2,10 +2,10 @@ import 'dart:html';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Bases/canvas_widgets.dart';
-import 'package:flutteruibuilder/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Bases/fsketch_widget.dart';
-import 'package:flutteruibuilder/Bases/traversal_data.dart';
+import 'package:flutteruibuilder/Editor/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
+import 'package:flutteruibuilder/Editor/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 
