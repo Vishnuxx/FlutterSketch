@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/editor_pane_state.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/controls_pane.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
-import 'package:flutteruibuilder/Editor/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/palette_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/element_treegraph.dart';
+import 'package:flutteruibuilder/Editor/UIPanels/left_panel.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/widgets_panel.dart';
 import 'package:flutteruibuilder/Widgets/fs_container.dart';
 
@@ -49,13 +51,15 @@ class EditorPane extends StatefulWidget {
 }
 
 class _EditorPaneState extends State<EditorPane> {
+  EditorPaneState ep = EditorPaneState();
+  List<CanvasWidget> collections = [];
   SelectionIndicatior selectionIndicatior = SelectionIndicatior();
+  CanvasWidget? currentDroppableWidget;
+
   CanvasWidget? currentDraggingWidget;
 
   bool? isSelected;
   Offset? pointerLocation;
-  int?
-      prevIndex; //records the index of the item being dragged.used to restor position of the dragged element if dragging fails
 
   List<Widget>? hiddenWidgets = [];
   List<WidgetController>? controllers = [];
@@ -70,7 +74,7 @@ class _EditorPaneState extends State<EditorPane> {
   @override
   void initState() {
     super.initState();
-
+    hiddenWidgets = ep.hiddenWidgets;
     tree = ElementTreeGraph(
       width: 200,
       onWidgetSelected: (wid) {
@@ -286,7 +290,7 @@ class _EditorPaneState extends State<EditorPane> {
 
   //used to select widgets
   void selectWidget(CanvasWidget? cwid) {
-    for (int i = 0; i < widget.widgets!.length(); ++i) {
+    for (int i = 0; i < collections.length; ++i) {
       if (cwid != null && cwid == widget.widgets?.getChildren()[i]) {
         cwid.select();
       } else {
@@ -391,8 +395,11 @@ class _EditorPaneState extends State<EditorPane> {
           widget.widgets!, false, details.globalPosition, widget,
           //hasEntered
           (data) {
+        // currentDroppableWidget?.unselect();
         dropData = data;
-        selectWidget(dropData?.canvasWidget!);
+        currentDroppableWidget = data.canvasWidget;
+
+        //selectWidget(data.canvasWidget);
       }, () {});
     } else {
       //is not from pallette
@@ -417,6 +424,7 @@ class _EditorPaneState extends State<EditorPane> {
   void onDragEnd(bool isFromPallette) {
     if (isFromPallette) {
       if (dropData?.canvasWidget != null) {
+        collections.add(currentDraggingWidget!);
         dropData?.childCWHolder?.add(currentDraggingWidget!);
         //selectWidget(currentDraggingWidget);
       }

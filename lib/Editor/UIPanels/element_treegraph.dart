@@ -1,7 +1,7 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 
 class ElementTreeGraph extends StatefulWidget {
   _ElementTreeGraphState _state = _ElementTreeGraphState();

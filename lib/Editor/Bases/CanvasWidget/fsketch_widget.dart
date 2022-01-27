@@ -23,7 +23,7 @@ abstract class FlutterSketchWidget extends Widget {
 
   void set( String property, dynamic value); //used to access and edit properties of the widget in realtime
 
-  List<WidgetController>? controllers;
+  List<WidgetController>? controllers; //widgets to display and edit the properties 
 
   Map getProperties(); //returns the _props map
 

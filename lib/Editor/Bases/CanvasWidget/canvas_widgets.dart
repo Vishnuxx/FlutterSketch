@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 
 // ignore: must_be_immutable
 class CanvasWidget extends StatefulWidget {
   _CanvasWidgetState _state = _CanvasWidgetState();
   bool _isSelected = false;
   bool _wireframe = true;
+
   CanvasWidget? _parent;
 
   GlobalKey _gkey = GlobalKey();
@@ -79,6 +80,8 @@ class CanvasWidget extends StatefulWidget {
     child.setParent(null);
     return child;
   }
+
+  
 
   @override
   State<CanvasWidget> createState() => _state;

@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 
 
