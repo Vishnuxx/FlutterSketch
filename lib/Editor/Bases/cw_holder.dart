@@ -20,6 +20,7 @@ class CWHolder {
     // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _list.remove(widget);
+      // ignore: avoid_print
       print(_state);
     });
   }
@@ -32,6 +33,7 @@ class CWHolder {
   }
 
   void show() {
+    // ignore: avoid_print
     print(_state);
   }
 

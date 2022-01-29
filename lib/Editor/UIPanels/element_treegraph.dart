@@ -1,10 +1,10 @@
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 
+// ignore: must_be_immutable
 class ElementTreeGraph extends StatefulWidget {
-  _ElementTreeGraphState _state = _ElementTreeGraphState();
+  final _ElementTreeGraphState _state = _ElementTreeGraphState();
   double? width = 0;
   List<Widget>? nodes = [];
   void Function(CanvasWidget wid)? onWidgetSelected;
@@ -13,6 +13,7 @@ class ElementTreeGraph extends StatefulWidget {
       : super(key: key);
 
   void refresh(List<CanvasWidget>? list) {
+    // ignore: invalid_use_of_protected_member
     _state.setState(() {
       nodes = [];
       _state.drawTree(list, 0);
@@ -30,11 +31,11 @@ class _ElementTreeGraphState extends State<ElementTreeGraph> {
     return Container(
         width: widget.width,
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
               child: Text("Tree Graph"),
             ),
             Expanded(
@@ -62,9 +63,9 @@ class _ElementTreeGraphState extends State<ElementTreeGraph> {
         width: double.infinity,
         height: 30.0,
         child: GestureDetector(
-          child: Text("|__element" + margin.toString() , style: TextStyle(color: Colors.black54),),
+          child: Text("|__" + node!.id  , style: const TextStyle(color: Colors.black54),),
           onTapDown: (details) {
-            widget.onWidgetSelected!(node!);
+            widget.onWidgetSelected!(node);
           },
         ));
   }

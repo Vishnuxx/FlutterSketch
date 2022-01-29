@@ -7,7 +7,10 @@ import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 class FSIconButton extends StatefulWidget implements FlutterSketchWidget {
   final State _state = _FSIconButtonState();
 
-  final Map _props = {"width": 200, "height": 100, "color": Colors.blue};
+   @override
+  final Map<String, dynamic> _props = {"width": 200, "height": 100, "color": Colors.blue};
+
+ 
 
     @override
   bool? isMultiChilded;
@@ -18,7 +21,7 @@ class FSIconButton extends StatefulWidget implements FlutterSketchWidget {
   @override
   CWHolder? children;
 
-  FSIconButton({Key? key}) : super(key: key){
+  FSIconButton({Key? key  }) : super(key: key){
     isMultiChilded = false;
     isViewGroup = false;
     children = CWHolder([] , _state);
@@ -55,6 +58,38 @@ class FSIconButton extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   List<WidgetController>? controllers;
+
+  @override
+  void onDragMove() {
+    // TODO: implement onDragMove
+  }
+
+  @override
+  void onDragStart() {
+    // TODO: implement onDragStart
+  }
+
+  @override
+  void onDrop() {
+    // TODO: implement onDrop
+  }
+
+  @override
+  bool onEnter() {
+    // TODO: implement onEnter
+    throw UnimplementedError();
+  }
+
+  @override
+  bool onExit() {
+    // TODO: implement onExit
+    throw UnimplementedError();
+  }
+
+  @override
+  void onSelect() {
+    // TODO: implement onSelect
+  }
 }
 
 class _FSIconButtonState extends State<FSIconButton> {

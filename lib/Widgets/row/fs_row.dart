@@ -4,13 +4,17 @@ import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 
 // ignore: must_be_immutable
-class FSColumn extends StatefulWidget implements FlutterSketchWidget {
-  final State _state = _FSColumnState();
+class FSRow extends StatefulWidget implements FlutterSketchWidget {
+  final State _state = _FSRowState();
 
-  final Map _props = {
+
+
+  @override
+  final Map<String, dynamic> _props = {
     "width": double.infinity,
-    "height": 100,
-    "color": null
+    "height": 50,
+    "color": const Color(0xff3FC5FF),
+    "crossAxisAlignment" : CrossAxisAlignment.start,
   };
 
   @override
@@ -22,7 +26,7 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
   @override
   CWHolder? children;
 
-  FSColumn({Key? key}) : super(key: key) {
+  FSRow({Key? key }) : super(key: key) {
     isMultiChilded = true;
     isViewGroup = true;
     children = CWHolder([] , _state);
@@ -80,7 +84,7 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   // ignore: no_logic_in_create_state
-  _FSColumnState createState() => _state as _FSColumnState;
+  _FSRowState createState() => _state as _FSRowState;
 
   @override
   Map getProperties() => throw UnimplementedError();
@@ -98,9 +102,41 @@ class FSColumn extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   List<WidgetController>? controllers;
+
+  @override
+  void onDragMove() {
+    // TODO: implement onDragMove
+  }
+
+  @override
+  void onDragStart() {
+    // TODO: implement onDragStart
+  }
+
+  @override
+  void onDrop() {
+    // TODO: implement onDrop
+  }
+
+  @override
+  bool onEnter() {
+    // TODO: implement onEnter
+    throw UnimplementedError();
+  }
+
+  @override
+  bool onExit() {
+    // TODO: implement onExit
+    throw UnimplementedError();
+  }
+
+  @override
+  void onSelect() {
+    // TODO: implement onSelect
+  }
 }
 
-class _FSColumnState extends State<FSColumn> {
+class _FSRowState extends State<FSRow> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -108,7 +144,8 @@ class _FSColumnState extends State<FSColumn> {
       height: double.parse(widget._props["height"].toString()),
       color: widget._props["color"],
       padding: const EdgeInsets.all(10),
-      child: Column(
+      child: Row(
+        crossAxisAlignment: widget._props["crossAxisAlignment"] ,
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
         ,
       ),

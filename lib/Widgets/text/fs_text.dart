@@ -5,6 +5,8 @@ import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 
 // ignore: must_be_immutable
 class FSText extends StatefulWidget implements FlutterSketchWidget {
+
+
   @override
   bool? isMultiChilded;
 
@@ -17,7 +19,8 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   @override
   CWHolder? children;
 
-  final Map _props = {
+  @override
+  final Map<String, dynamic> _props = {
     "name": "text",
     "text": "textview",
     "color": Colors.amber
@@ -26,7 +29,7 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
   FSText({Key? key}) : super(key: key) {
     isMultiChilded = false;
     isViewGroup = false;
-    children = CWHolder([] , _state);
+    children = CWHolder([], _state);
     _initControllers();
   }
 
@@ -61,19 +64,47 @@ class FSText extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   Map getProperties() {
-    // ignore: todo
-    // TODO: implement getProperties
-    throw UnimplementedError();
+    return _props;
   }
 
   @override
   Object toDataObject() => throw UnimplementedError();
 
-  
-
   @override
   // ignore: no_logic_in_create_state
   _FSTextState createState() => _state as _FSTextState;
+
+  @override
+  void onDragMove() {
+    // TODO: implement onDragMove
+  }
+
+  @override
+  void onDragStart() {
+    // TODO: implement onDragStart
+  }
+
+  @override
+  void onDrop() {
+    // TODO: implement onDrop
+  }
+
+  @override
+  bool onEnter() {
+    // TODO: implement onEnter
+    throw UnimplementedError();
+  }
+
+  @override
+  bool onExit() {
+    // TODO: implement onExit
+    throw UnimplementedError();
+  }
+
+  @override
+  void onSelect() {
+    // TODO: implement onSelect
+  }
 }
 
 class _FSTextState extends State<FSText> {
@@ -87,4 +118,3 @@ class _FSTextState extends State<FSText> {
     return Text(widget._props["text"].toString());
   }
 }
-

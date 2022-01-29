@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EditingScene extends StatefulWidget {
-  EditingScene({Key? key}) : super(key: key);
+  const EditingScene({Key? key}) : super(key: key);
 
   @override
   State<EditingScene> createState() => _EditingSceneState();

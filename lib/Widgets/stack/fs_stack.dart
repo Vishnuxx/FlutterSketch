@@ -4,14 +4,14 @@ import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 
 // ignore: must_be_immutable
-class FSRow extends StatefulWidget implements FlutterSketchWidget {
-  final State _state = _FSRowState();
+class FSStack extends StatefulWidget implements FlutterSketchWidget {
+  final State _state = _FSStackState();
 
-  final Map _props = {
-    "width": double.infinity,
-    "height": 50,
-    "color": const Color(0xff3FC5FF),
-    "crossAxisAlignment" : CrossAxisAlignment.start,
+   @override
+  final Map<String, dynamic> _props = {
+    "width": 200,
+    "height": 100,
+    "color": const Color(0xff3FC5FF)
   };
 
   @override
@@ -23,7 +23,7 @@ class FSRow extends StatefulWidget implements FlutterSketchWidget {
   @override
   CWHolder? children;
 
-  FSRow({Key? key}) : super(key: key) {
+  FSStack({Key? key }) : super(key: key) {
     isMultiChilded = true;
     isViewGroup = true;
     children = CWHolder([] , _state);
@@ -81,7 +81,7 @@ class FSRow extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   // ignore: no_logic_in_create_state
-  _FSRowState createState() => _state as _FSRowState;
+  _FSStackState createState() => _state as _FSStackState;
 
   @override
   Map getProperties() => throw UnimplementedError();
@@ -99,9 +99,41 @@ class FSRow extends StatefulWidget implements FlutterSketchWidget {
 
   @override
   List<WidgetController>? controllers;
+
+  @override
+  void onDragMove() {
+    // TODO: implement onDragMove
+  }
+
+  @override
+  void onDragStart() {
+    // TODO: implement onDragStart
+  }
+
+  @override
+  void onDrop() {
+    // TODO: implement onDrop
+  }
+
+  @override
+  bool onEnter() {
+    // TODO: implement onEnter
+    throw UnimplementedError();
+  }
+
+  @override
+  bool onExit() {
+    // TODO: implement onExit
+    throw UnimplementedError();
+  }
+
+  @override
+  void onSelect() {
+    // TODO: implement onSelect
+  }
 }
 
-class _FSRowState extends State<FSRow> {
+class _FSStackState extends State<FSStack> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -109,8 +141,7 @@ class _FSRowState extends State<FSRow> {
       height: double.parse(widget._props["height"].toString()),
       color: widget._props["color"],
       padding: const EdgeInsets.all(10),
-      child: Row(
-        crossAxisAlignment: widget._props["crossAxisAlignment"] ,
+      child: Stack(
         children: (widget.children!.isNotEmpty())? widget.children!.getChildren() : []
         ,
       ),

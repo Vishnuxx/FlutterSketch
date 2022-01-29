@@ -1,20 +1,20 @@
-/*
-  place where widgets are dropped and arranged
- */
-
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Widgets/container/fs_container_controller.dart';
 
 // ignore: must_be_immutable
-class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
-  final State _state = _EditorCanvasState();
+class FSContainer extends StatefulWidget implements FlutterSketchWidget {
+  final State _state = _FSContainerState();
 
-  final Map _props = {};
+  final Map<String , dynamic> _props = {
+    "width": 200,
+    "height": 100,
+    "color": null //const Color(0xff3FC5FF)
+  };
 
-  String? id;
-
+  
   @override
   bool? isMultiChilded;
 
@@ -24,18 +24,25 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
   @override
   CWHolder? children;
 
-  EditorCanvas({Key? key}) : super(key: key) {
-    isMultiChilded = true;
+  FSContainer({Key? key }) : super(key: key) {
+    isMultiChilded = false;
     isViewGroup = true;
     children = CWHolder([], _state);
+    _initControllers();
+  }
+
+  void _initControllers() {
+    controllers = FSContainerController.getControllers(this);
   }
 
   @override
   // ignore: no_logic_in_create_state
-  _EditorCanvasState createState() => _state as _EditorCanvasState;
+  _FSContainerState createState() => _state as _FSContainerState;
 
   @override
-  Map getProperties() => throw UnimplementedError();
+  Map getProperties() {
+    return _props;
+  }
 
   @override
   void set(String property, dynamic value) {
@@ -84,19 +91,17 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
   }
 }
 
-class _EditorCanvasState extends State<EditorCanvas> {
+class _FSContainerState extends State<FSContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
+      width: double.parse(widget._props["width"].toString()),
+      height: double.parse(widget._props["height"].toString()),
+      color: widget._props["color"],
       padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: (widget.children!.isNotEmpty())
-            ? widget.children!.getChildren()
-            : [],
-      ),
+      child: (widget.children!.isNotEmpty())
+          ? widget.children!.elementAt(0)
+          : null,
     );
   }
 }

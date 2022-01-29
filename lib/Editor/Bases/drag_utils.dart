@@ -1,13 +1,10 @@
-import 'dart:html';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
 
 class DragUtils {
   //checks if two widgets hits
@@ -63,7 +60,7 @@ class DragUtils {
     if (widget.runtimeType == EditorPane) {
       canvas = (widget as EditorPane).root;
       data?.parentCWHolder = parentList;
-      data?.childCWHolder = (widget as EditorPane).root?.widget?.children;
+      data?.childCWHolder = (widget).root?.widget?.children;
     } else {
       canvas = widget as CanvasWidget;
       data?.parentCWHolder = parentList;

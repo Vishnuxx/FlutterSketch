@@ -38,17 +38,17 @@ class _WidgetControllerState extends State<WidgetController> {
                 Expanded(
                   child: Text(
                     widget.title,
-                    style:  TextStyle(color: Color(0xff666BB4), fontSize: 16 , fontWeight: isOpened? FontWeight.bold : FontWeight.normal),
+                    style:  TextStyle(color: const Color(0xff666BB4), fontSize: 16 , fontWeight: isOpened? FontWeight.bold : FontWeight.normal),
                   ),
                 ),
-              RotatedBox(quarterTurns: isOpened? 90 : 0 , child: Icon(Icons.arrow_drop_down ,),)
+              RotatedBox(quarterTurns: isOpened? 90 : 0 , child: const Icon(Icons.arrow_drop_down ,),)
                
               ],
             ),
           ),
-          SizedBox(height:15.0),
+          const SizedBox(height:15.0),
           Container(
-            decoration: BoxDecoration(border:Border(bottom: BorderSide(width: 0.5, color:  Colors.black12 )) , color: const Color(0xffDEDEDE), ),
+            decoration: const BoxDecoration(border:Border(bottom: BorderSide(width: 0.5, color:  Colors.black12 )) , color: Color(0xffDEDEDE), ),
               height: isOpened ? null: 0,
               child: Column(
                 children: [
