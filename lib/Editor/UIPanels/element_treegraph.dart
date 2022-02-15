@@ -53,7 +53,7 @@ class _ElementTreeGraphState extends State<ElementTreeGraph> {
   drawTree(List<CanvasWidget>? list, double marg) {
     for (CanvasWidget node in list!) {
       widget.nodes?.add(treeTile(marg ,  node));
-      drawTree(node.widget?.children?.getChildren(), marg + 14);
+      drawTree(node.fsWidget?.children?.getChildren(), marg + 14);
     }
   }
 

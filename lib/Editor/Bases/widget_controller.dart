@@ -1,3 +1,4 @@
+//Section based controller Mainly used to control widgetvproperties like changing its width , height etc in runtime
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -5,20 +6,26 @@ class WidgetController extends StatefulWidget {
   List<Widget>? controllers;
   String title;
 
+
   WidgetController(this.title, {Key? key, this.controllers}) : super(key: key);
+
 
   @override
   State<WidgetController> createState() => _WidgetControllerState();
+  
 }
 
 class _WidgetControllerState extends State<WidgetController> {
+
   bool isOpened = false;
+
 
   @override
   void initState() {
     super.initState();
     isOpened = false;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +55,7 @@ class _WidgetControllerState extends State<WidgetController> {
           ),
           const SizedBox(height:15.0),
           Container(
-            decoration: const BoxDecoration(border:Border(bottom: BorderSide(width: 0.5, color:  Colors.black12 )) , color: Color(0xffDEDEDE), ),
+            decoration: const BoxDecoration(border:Border(bottom: BorderSide(width: 0.5, color:  Colors.black12 )) , ),
               height: isOpened ? null: 0,
               child: Column(
                 children: [

@@ -23,8 +23,6 @@ class EditorPaneData {
   List<WidgetController>? controllers = [];
   DragShadow shadow = DragShadow();
 
-  TraversalData? dragData; //data of the dragging element
-  TraversalData? dropData; //data of the drop listening element
 
   ElementTreeGraph? tree;
 }
