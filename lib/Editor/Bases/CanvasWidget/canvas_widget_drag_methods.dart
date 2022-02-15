@@ -6,5 +6,5 @@ abstract class CWDragMethods {
   CWDragData? pickUp(
       CanvasWidget
           canvas); //picks up the canvas widget and returns its old parent
-  void dropTo(CWDragData data ,  Widget dropzone);
+  void dropTo(CWDragData data ,  CanvasWidget dropzone);
 }

@@ -13,6 +13,8 @@ abstract class CanvasWidgetFunctions {
 
   void setProperty(String property, dynamic value);
 
+  List<CanvasWidget> getChildren();
+
   void addChild(CanvasWidget widget);
   void removeChild(CanvasWidget widget);
   void insertChild(int index, CanvasWidget child);

@@ -8,8 +8,8 @@ class SelectionIndicatior extends StatefulWidget {
   bool _isVisible = true;
   Map _map = {
     "isVisible": true,
-    "height": 10.0,
-    "width": 30.0,
+    "height": 0.0,
+    "width": 0.0,
     "x": 0.0,
     "y": 0.0,
     "color": const Color(0xffFF00B8)
@@ -90,7 +90,7 @@ class _SelectionIndicatiorState extends State<SelectionIndicatior> {
                 color: Colors.transparent,
                 border: Border.all(
                   color: widget._map["color"] as Color,
-                  width: 3,
+                  width: 2,
                 ),
               ),
             ),

@@ -13,9 +13,6 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
 
   final Map _props = {};
 
-  bool _isSelected = false;
-  bool _wireframe = true;
-
   String? id;
 
   @override
@@ -45,12 +42,6 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
     // ignore: invalid_use_of_protected_member
     _state.setState(() {
       _props[property] = value;
-    });
-  }
-
-  void select(bool select) {
-    _state.setState(() {
-      _isSelected = select;
     });
   }
 
@@ -94,30 +85,15 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
 }
 
 class _EditorCanvasState extends State<EditorCanvas> {
-  Border? _borderAndWireframe() {
-    Border? border;
-    if (widget._wireframe) {
-      border = Border.all(color: const Color(0xff000000), width: 1);
-    }
-    if (widget._isSelected) {
-      border = Border.all(color: const Color(0xffFF5C00), width: 3);
-    }
-    return border;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       height: double.infinity,
-      color: Colors.green,
-      padding: const EdgeInsets.all(10),
-      foregroundDecoration: BoxDecoration(border: _borderAndWireframe()),
+      width: double.infinity,
+
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: (widget.children!.isNotEmpty())
-            ? widget.children!.getChildren()
-            : [],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widget.children!.getChildren()
       ),
     );
   }

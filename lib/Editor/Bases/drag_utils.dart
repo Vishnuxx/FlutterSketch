@@ -39,7 +39,6 @@ class DragUtils {
   //     void Function() hasNotEntered) {
   //   //
 
-    
   //   bool isEntered = false;
 
   //   if (widget.runtimeType == EditorPane) {
@@ -119,39 +118,52 @@ class DragUtils {
 
   static void findTargetAtLocation(CanvasWidget parent, Offset location,
       {required void Function(CanvasWidget? parent) callback}) {
-    if (!parent.isViewGroup) {
-      callback(parent);
-      return;
-    }
-
-    for (CanvasWidget child in parent.fsWidget!.children!.getChildren()) {
-      if (isHitting(location, child)) {
-        if (parent.isMultiChilded) {
-          findTargetAtLocation(
-            child,
-            location,
-            callback: (_parent) => callback(child)
-           
-          );
-
-        } else {
-          if (parent.fsWidget!.children!.isNotEmpty()) {
-            findTargetAtLocation(
-              parent.fsWidget!.children!.elementAt(0),
-              location,
-              callback:(_parent) =>  callback(child)
-            );
-          } else {
-            callback(child);
-          }
-        }
+    if (isHitting(location, parent)) {
+      if (!parent.isViewGroup) {
+        callback(parent);
         return;
       }
-    }
 
-    if (isHitting(location, parent)) {
-      callback(parent);
+      List<CanvasWidget> children = parent.getChildren();
+
+      if (children.length == 0) {
+        callback(parent);
+        return;
+      }
+
+      for (CanvasWidget child in children) {
+        if (isHitting(location, child)) {
+          if (parent.isMultiChilded) {
+            findTargetAtLocation(
+              child,
+              location,
+              callback: (par) {
+                callback(par);
+              },
+            );
+          } else {
+            if (parent.fsWidget!.children!.isNotEmpty()) {
+              findTargetAtLocation(
+                parent.fsWidget!.children!.elementAt(0),
+                location,
+                callback: (par) {
+                  callback(par);
+                },
+              );
+            } else {
+              callback(child);
+            }
+          }
+          return;
+        }
+      }
     } else {
+      print(location.toString() +
+          "compares" +
+          ((parent.key as GlobalKey).currentContext?.findRenderObject()
+                  as RenderBox)
+              .localToGlobal(Offset.zero)
+              .toString());
       callback(null);
     }
   }

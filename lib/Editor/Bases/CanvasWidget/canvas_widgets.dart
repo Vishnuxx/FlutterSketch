@@ -56,7 +56,6 @@ class CanvasWidget extends StatefulWidget
     });
   }
 
- 
   @override
   //for showing outlines
   void showWireframe(bool value) {
@@ -85,6 +84,11 @@ class CanvasWidget extends StatefulWidget
   }
 
   @override
+  List<CanvasWidget> getChildren() {
+    return fsWidget!.children!.getChildren();
+  }
+
+  @override
   //adds child to this widget if it is a viewgroup
   void addChild(CanvasWidget child) {
     if (!fsWidget!.isViewGroup!) {
@@ -92,10 +96,10 @@ class CanvasWidget extends StatefulWidget
     }
     if (child.getParent() == null) {
       child.setParent(this);
-      fsWidget?.children!.add(child);
+      fsWidget!.children!.add(child);
     } else {
       child.getParent()!.removeChild(child);
-      fsWidget?.children!.add(child);
+      fsWidget!.children!.add(child);
     }
   }
 
@@ -138,15 +142,8 @@ class CanvasWidget extends StatefulWidget
   }
 
   @override
-  void dropTo(CWDragData data, Widget? dropzone) {
-    if (data.oldParent != null) {
-      if (data.oldParent.runtimeType.toString() == CanvasWidget) {
-        (data.oldParent as CanvasWidget).fsWidget!.children!.remove(this);
-      } else {
-        (data.oldParent as EditorPane).widgets!.remove(this);
-      }
-    }
-    (dropzone as CanvasWidget).addChild(this);
+  void dropTo(CWDragData data, CanvasWidget? dropzone) {
+    
   }
 
   //DRAG METHODS

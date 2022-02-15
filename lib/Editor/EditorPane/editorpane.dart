@@ -15,6 +15,7 @@ import 'package:flutteruibuilder/Editor/EditorPane/palette_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/element_treegraph.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/widgets_panel.dart';
+import 'package:flutteruibuilder/Widgets/column/fs_column.dart';
 
 // ignore: must_be_immutable
 class EditorPane extends StatefulWidget {
@@ -37,9 +38,12 @@ class EditorPane extends StatefulWidget {
 
   late EditorPaneData data;
 
+  late CWDragData dropdata;
+
   EditorPane({Key? key}) : super(key: key) {
     widgets = CWHolder([], _state);
     data = EditorPaneData();
+    dropdata = CWDragData();
   }
 
   void setState(Function callback) {
@@ -143,7 +147,7 @@ class _EditorPaneState extends State<EditorPane> {
       EditorCanvas(
         children: thispane.widgets,
       ),
-      false,
+      true,
       key: GlobalKey(),
     );
 
@@ -201,6 +205,7 @@ class _EditorPaneState extends State<EditorPane> {
 
   //widget panel
   Widget widgetPanel(EditorPane editor) {
+    thispane.root?.select(true);
     return WidgetPanel(
       EditorPane.WIDGETS_PANEL_W,
       children: [
@@ -262,16 +267,8 @@ class _EditorPaneState extends State<EditorPane> {
         onDragMove(details.globalPosition, true);
       },
       onDragCompleted: () {
-        //   setState(() {
-        try {
-          thispane.data.currentDraggingWidget = canvasWidget(label);
-
-          // ignore: empty_catches
-        } catch (e) {
-          print("draggablePallette()" + e.toString());
-        }
+        thispane.data.currentDraggingWidget = canvasWidget(label);
         onDragEnd(true, thispane.data.currentDraggingWidget!);
-        //  });
       },
     );
   }
@@ -328,7 +325,8 @@ class _EditorPaneState extends State<EditorPane> {
       thispane.root!,
       details.globalPosition,
       callback: (parent) {
-        thispane.data.currentDraggingWidget = parent;
+        parent?.select(true);
+        // thispane.data.currentDraggingWidget = parent;
       },
     );
     thispane.data.controllers =
@@ -343,23 +341,21 @@ class _EditorPaneState extends State<EditorPane> {
     DragUtils.findTargetAtLocation(thispane.root!, location,
         callback: (parent) {
       thispane.data.currentDroppableWidget = parent;
-      print("object");
+      parent?.select(true);
     });
   }
 
   void onDragEnd(bool isFromPallette, CanvasWidget widgetToDrop) {
     var editorpanedata = thispane.data;
-    CWDragData data = CWDragData();
     if (isFromPallette) {
-      thispane.widgets?.add(widgetToDrop);
+      editorpanedata.currentDroppableWidget?.addChild(widgetToDrop);
+      
 
-      if (thispane.data.currentDroppableWidget == thispane.root) {
-        widgetToDrop.dropTo(data, thispane.data.currentDroppableWidget);
-      }
+      editorpanedata.tree?.refresh(thispane.widgets?.getChildren());
+      print(thispane.root?.getChildren());
+      return;
     }
-
-    editorpanedata.currentDraggingWidget!
-        .dropTo(data, editorpanedata.currentDroppableWidget);
+    editorpanedata.currentDroppableWidget?.addChild(widgetToDrop);
     editorpanedata.selectionIndicatior.selectWidget(null);
     editorpanedata.tree?.refresh(thispane.widgets?.getChildren());
   }
