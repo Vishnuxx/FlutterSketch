@@ -1,14 +1,13 @@
 // ignore: file_names
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 
 abstract class CanvasWidgetFunctions {
   late String id;
   final Map<String, dynamic> _props = {};
 
-  void select();
-  void unselect();
-
-  
+  void select(bool isSelected);
+  // void unselect();
 
   void showWireframe(bool value);
 
@@ -20,4 +19,6 @@ abstract class CanvasWidgetFunctions {
 
   void setParent(CanvasWidget widget);
   CanvasWidget? getParent();
+
+  FlutterSketchWidget getFSWidget();
 }

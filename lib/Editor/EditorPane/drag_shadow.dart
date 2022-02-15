@@ -12,13 +12,14 @@ class DragShadow extends StatefulWidget {
 
   DragShadow({Key? key}) : super(key: key);
 
-  void setPosition(DragUpdateDetails details) {
+  void setPosition(Offset location) {
     // ignore: invalid_use_of_protected_member
     _state.setState(() {
-      x = details.globalPosition.dy;
-      y = details.globalPosition.dx;
+      x = location.dy;
+      y = location.dx;
     });
   }
+
 
   void setVisibility(bool visibility) {
     // ignore: invalid_use_of_protected_member
@@ -26,6 +27,7 @@ class DragShadow extends StatefulWidget {
       visible = visibility;
     });
   }
+
 
   void setSizeOf(CanvasWidget widget) {
       RenderBox box = (widget.key as GlobalKey)
@@ -40,10 +42,14 @@ class DragShadow extends StatefulWidget {
     });
   }
 
+
   @override
   // ignore: no_logic_in_create_state
   _DragShadowState createState() => _state;
+
 }
+
+////
 
 class _DragShadowState extends State<DragShadow> {
   @override

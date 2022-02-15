@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/cw_drag_data.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
+import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
+import 'package:flutteruibuilder/Editor/UIPanels/canvas_panel.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editor_pane_data.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/controls_pane.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
-import 'package:flutteruibuilder/Widgets/widgets_pallette_list.dart';
+
+import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/palette_widget.dart';
@@ -52,17 +56,20 @@ class EditorPane extends StatefulWidget {
 
 class _EditorPaneState extends State<EditorPane> {
   //List<CanvasWidget> collections = [];
-
   ///late EditorCanvas canvas;
+
+  late EditorPane thispane; //this editorpane
 
   @override
   void initState() {
     super.initState();
-    widget.data.hiddenWidgets = CWHolder([], this);
-    widget.data.tree = ElementTreeGraph(
+    thispane = widget;
+
+    thispane.data.hiddenWidgets = CWHolder([], this);
+    thispane.data.tree = ElementTreeGraph(
       width: 200,
       onWidgetSelected: (wid) {
-        //selectionIndicatior.selectWidget(wid);
+        wid.select(true);
       },
     );
   }
@@ -77,87 +84,88 @@ class _EditorPaneState extends State<EditorPane> {
             style: TextStyle(
                 color: Color(0xff70839E), fontWeight: FontWeight.bold),
           ),
-          elevation: 0,
-          backgroundColor: const Color(0xffF2F3F4),
+          elevation: 1,
+          backgroundColor: const Color(0xffffffff),
         ),
         body: Container(
-          color: Colors.white,
           child: Stack(
             children: [
               Row(children: [
-                widgetPanel(),
-                graph(),
+                widgetPanel(thispane),
+                graph(thispane),
                 canvasPanel(),
-                controlPane()
+                controlPane(thispane)
               ]),
-              widget.data.selectionIndicatior,
+
+              thispane.data.selectionIndicatior,
 
               SizedBox(
                   width: 0,
                   height: 0,
                   child: Column(
-                    children: widget.data.hiddenWidgets!.getChildren(),
+                    children: thispane.data.hiddenWidgets!.getChildren(),
                   )), //used to store widgets temporarily
-              widget.data.shadow
+              thispane.data.shadow
             ],
           ),
         ));
   }
 
-/*
-  ______________UI Components______________
-*/
-
-  ElementTreeGraph graph() {
-    return widget.data.tree!;
+  //Tree Graph
+  ElementTreeGraph graph(EditorPane editor) {
+    return thispane.data.tree!;
   }
 
-//canvas for showing the device
+  //canvas for showing the device
   Widget canvasPanel() {
     return Expanded(
       child: GestureDetector(
         onTap: () {
           setState(() {
-            widget.data.controllers = null;
+            thispane.data.controllers = null;
           });
 
-          widget.data.currentDraggingWidget = null;
+          thispane.data.currentDraggingWidget = null;
         },
-        child: Center(child: editingDevice()),
+        child: Container(
+            child: Center(child: editingDevice()), color: Color(0xffeeeeee)),
       ),
     );
   }
 
   //drop zone
   Widget editingDevice() {
-    EditorCanvas fs = EditorCanvas();
-    fs.children = widget.widgets;
-    widget.root = CanvasWidget(
-      widget,
-      fs,
+    //white screen to display UI
+
+    //editor canvas is wrapped inside CanvasWidget
+    thispane.root = CanvasWidget(
+      thispane,
+      EditorCanvas(
+        children: thispane.widgets,
+      ),
       false,
       key: GlobalKey(),
     );
+
+    //
     return SizedBox(
-        width: EditorPane.SCREEN_W,
-        height: EditorPane.SCREEN_H,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            appBar: AppBar(
-              title: const Text("New Flutter Project"),
-            ),
-            body: DragTarget(
-              builder: (context, candidateData, rejectedData) {
-                return widget.root!;
-              },
-            ),
-          ),
-        ));
+      width: EditorPane.SCREEN_W,
+      height: EditorPane.SCREEN_H,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("New Flutter Project"),
+        ),
+        body: DragTarget(
+          builder: (context, candidateData, rejectedData) {
+            return thispane.root!;
+          },
+        ),
+      ),
+    );
   }
 
-//pane to show widget controls
-  Widget controlPane() {
+  //pane to show widget controls
+  Widget controlPane(EditorPane editor) {
     return ControlsPane(
       padding: 5,
       width: EditorPane.WIDGETS_CONROLLER_PANEL_W,
@@ -180,17 +188,19 @@ class _EditorPaneState extends State<EditorPane> {
               onSubmitted: (value) {
                 setState(() {
                   EditorPane.SCREEN_H = double.parse(value);
+                  print("sj");
                 });
               },
             ),
           ],
         ),
-        ...?widget.data.controllers,
+        ...?thispane.data.controllers,
       ],
     );
   }
 
-  Widget widgetPanel() {
+  //widget panel
+  Widget widgetPanel(EditorPane editor) {
     return WidgetPanel(
       EditorPane.WIDGETS_PANEL_W,
       children: [
@@ -229,6 +239,7 @@ class _EditorPaneState extends State<EditorPane> {
     );
   }
 
+  //widetpanel -> label
   Widget label(String name) {
     return Container(
       width: double.infinity,
@@ -240,58 +251,45 @@ class _EditorPaneState extends State<EditorPane> {
     );
   }
 
-//pallette widgets
+  //pallette widgets
   Widget draggablePallette(String label, String imgsrc) {
     return PaletteWidget(
       isDraggable: true,
       path: imgsrc,
       label: label,
-      onDragStart: () {
-        // previousSelectedWidget?.unselect();
-        widget.data.currentDraggingWidget = null;
-      },
+      onDragStart: () {},
       onDragMove: (details) {
-        onDragMove(details, true);
+        onDragMove(details.globalPosition, true);
       },
       onDragCompleted: () {
         //   setState(() {
         try {
-          widget.data.currentDraggingWidget =
-              canvasWidget(label); //sampleWidget(label);
-          // widget.widgets?.add(widget.data.currentDraggingWidget!);
-          onDragEnd(true);
+          thispane.data.currentDraggingWidget = canvasWidget(label);
+
           // ignore: empty_catches
-        } on Exception {}
+        } catch (e) {
+          print("draggablePallette()" + e.toString());
+        }
+        onDragEnd(true, thispane.data.currentDraggingWidget!);
         //  });
       },
     );
   }
 
-  //used to select widgets
-  // void selectWidget(CanvasWidget? cwid) {
-  //   for (int i = 0; i < collections.length; ++i) {
-  //     if (cwid != null && cwid == widget.widgets?.getChildren()[i]) {
-  //       cwid.select();
-  //     } else {
-  //       widget.widgets?.getChildren()[i].unselect();
-  //     }
-  //   }
-  // }
-
   //this widget is generated everytime when user drags widget from pallette
   CanvasWidget canvasWidget(String type) {
     CanvasWidget? cWidget;
-    String newId = type + (widget.widgetId++).toString();
+    String newId = type + (thispane.widgetId++).toString();
 
     cWidget = CanvasWidget(
-      widget,
-      WidgetsPalletteList().generateWidget(type , GlobalKey()),
+      thispane,
+      WidgetsPalletteList().generateWidget(type, GlobalKey()),
       true,
       id: newId,
       key: GlobalKey(debugLabel: "vishnu"),
       //on element selected
-      onSelect: (TapDownDetails details) {
-        onSelect(details);
+      onSelect: (tapdetails) {
+        onSelect(tapdetails);
       },
 
       //on starting drag
@@ -301,13 +299,12 @@ class _EditorPaneState extends State<EditorPane> {
 
       //on moving the drag
       dragMove: (details) {
-        // print(details);
-        onDragMove(details, false);
+        onDragMove(details.globalPosition, false);
       },
 
       //onDrop
       dragEnd: (details) {
-        onDragEnd(false);
+        onDragEnd(false, thispane.data.currentDraggingWidget!);
       },
 
       //onCompleted
@@ -325,109 +322,45 @@ class _EditorPaneState extends State<EditorPane> {
 
   //drag methods
   void onSelect(TapDownDetails details) {
-    setState(() {
-      DragUtils.findWidgetsAt(
-          widget.widgets!, true, details.globalPosition, widget,
-          //onSuccess
-          (cv) {
-        widget.data.isSelected = true;
-        widget.data.dragData = cv;
-        widget.data.controllers = null;
-
-        widget.data.currentDraggingWidget = cv.canvasWidget;
-        widget.data.controllers =
-            widget.data.currentDraggingWidget?.widget?.controllers;
+    thispane.data.isSelected = true;
+    thispane.data.controllers = null;
+    DragUtils.findTargetAtLocation(
+      thispane.root!,
+      details.globalPosition,
+      callback: (parent) {
+        thispane.data.currentDraggingWidget = parent;
       },
-          //onFail
-          () {});
-    });
+    );
+    thispane.data.controllers =
+        thispane.data.currentDraggingWidget?.fsWidget?.controllers;
   }
 
   void onDragStart(bool isFromPallette) {
-    if (isFromPallette) {
-    } else {
-      //is not from pallette
-      if (widget.data.isSelected!) {
-        if (widget.data.dragData != null) {
-          widget.data.currentDraggingWidget =
-              widget.data.dragData?.canvasWidget;
-          widget.data.shadow.setSizeOf(widget.data.dragData!.canvasWidget!);
-          //picks this object for dragging
-          widget.data.currentDraggingWidget
-              ?.pickAndStoreTo(widget.data.hiddenWidgets!);
-          widget.data.controllers = null;
-        }
-      }
-    }
+    if (isFromPallette) {}
   }
 
-  void onDragMove(DragUpdateDetails details, bool isFromPallette) {
-    if (isFromPallette) {
-      DragUtils.findWidgetsAt(
-          widget.widgets!, false, details.globalPosition, widget,
-          //hasEntered
-          (data) {
-        // widget.data.currentDroppableWidget?.unselect();
-        widget.data.dropData = data;
-        widget.data.currentDroppableWidget = data.canvasWidget;
-      }, () {});
-    } else {
-      //is not from pallette
-      if (widget.data.isSelected!) {
-        if (widget.data.dragData != null) {
-          widget.data.shadow.setVisibility(true);
-          widget.data.shadow.setPosition(details);
-          DragUtils.findWidgetsAt(
-              widget.widgets!, false, details.globalPosition, widget, (data) {
-            //hasEntered
-
-            widget.data.dropData = data;
-          }, () {
-            //hasNotEntered
-          });
-        }
-      }
-    }
+  void onDragMove(Offset location, bool isFromPallette) {
+    DragUtils.findTargetAtLocation(thispane.root!, location,
+        callback: (parent) {
+      thispane.data.currentDroppableWidget = parent;
+      print("object");
+    });
   }
 
-  void onDragEnd(bool isFromPallette) {
+  void onDragEnd(bool isFromPallette, CanvasWidget widgetToDrop) {
+    var editorpanedata = thispane.data;
+    CWDragData data = CWDragData();
     if (isFromPallette) {
-      if (widget.data.dropData?.canvasWidget != null) {
-        widget.data.collections.add(widget.data.currentDraggingWidget!);
-        //widget.data.dropData?.canvasWidget?.addChild(widget.data.currentDraggingWidget!);
-        widget.data.currentDraggingWidget
-            ?.dropTo(widget.data.dropData!.canvasWidget!);
-      }
-    } else {
-      //is not from pallette
-      if (widget.data.isSelected!) {
-        widget.data.shadow.setVisibility(false);
+      thispane.widgets?.add(widgetToDrop);
 
-        if (widget.data.dropData?.canvasWidget != null) {
-          widget.data.isSelected = false;
-          //if target is multichilded
-          FlutterSketchWidget? fs = widget.data.dropData?.canvasWidget?.widget;
-          if (fs != null && fs.isViewGroup!) {
-            widget.data.hiddenWidgets
-                ?.remove(widget.data.currentDraggingWidget!);
-
-            widget.data.currentDraggingWidget
-                ?.dropTo(widget.data.dropData!.canvasWidget!);
-          } else {}
-        }
-        // else {
-        //   //if target is root
-        //   print("ksldksjdlkslfdkf");
-        //   widget.data.hiddenWidgets?.remove(widget.data.currentDraggingWidget!);
-        //   widget.data.dragData?.canvasWidget
-        //       ?.getParent()
-        //       ?.addChild(widget.data.currentDraggingWidget!);
-        //   //widget.widgets?.add(widget.data.currentDraggingWidget!);
-        // }
-
+      if (thispane.data.currentDroppableWidget == thispane.root) {
+        widgetToDrop.dropTo(data, thispane.data.currentDroppableWidget);
       }
     }
-    widget.data.selectionIndicatior.selectWidget(null);
-    widget.data.tree?.refresh(widget.widgets?.getChildren());
+
+    editorpanedata.currentDraggingWidget!
+        .dropTo(data, editorpanedata.currentDroppableWidget);
+    editorpanedata.selectionIndicatior.selectWidget(null);
+    editorpanedata.tree?.refresh(thispane.widgets?.getChildren());
   }
 }
