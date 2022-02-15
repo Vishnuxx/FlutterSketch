@@ -188,6 +188,7 @@ class _EditorPaneState extends State<EditorPane> {
               onSubmitted: (value) {
                 setState(() {
                   EditorPane.SCREEN_H = double.parse(value);
+                  print("sj");
                 });
               },
             ),
@@ -341,7 +342,6 @@ class _EditorPaneState extends State<EditorPane> {
   void onDragMove(Offset location, bool isFromPallette) {
     DragUtils.findTargetAtLocation(thispane.root!, location,
         callback: (parent) {
-      
       thispane.data.currentDroppableWidget = parent;
       print("object");
     });
