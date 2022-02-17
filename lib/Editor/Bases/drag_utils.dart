@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
-import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
+
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/canvas_panel.dart';
 
@@ -39,7 +39,6 @@ class DragUtils {
   //     void Function() hasNotEntered) {
   //   //
 
-    
   //   bool isEntered = false;
 
   //   if (widget.runtimeType == EditorPane) {
@@ -119,40 +118,38 @@ class DragUtils {
 
   static void findTargetAtLocation(CanvasWidget parent, Offset location,
       {required void Function(CanvasWidget? parent) callback}) {
-    if (!parent.isViewGroup) {
-      callback(parent);
-      return;
-    }
-
-    for (CanvasWidget child in parent.fsWidget!.children!.getChildren()) {
-      if (isHitting(location, child)) {
-        if (parent.isMultiChilded) {
-          findTargetAtLocation(
-            child,
-            location,
-            callback: (_parent) => callback(child)
-           
-          );
-
-        } else {
-          if (parent.fsWidget!.children!.isNotEmpty()) {
-            findTargetAtLocation(
-              parent.fsWidget!.children!.elementAt(0),
-              location,
-              callback:(_parent) =>  callback(child)
-            );
-          } else {
-            callback(child);
-          }
-        }
+    if (isHitting(location, parent)) {
+      if (!parent.isViewGroup) {
+        callback(parent);
         return;
       }
-    }
 
-    if (isHitting(location, parent)) {
+      List<CanvasWidget> children = parent.getChildren();
+      if (children.length == 0) {
+        callback(parent);
+        print("length is 0");
+        return;
+      }
+
+      for (CanvasWidget child in children) {
+        if (isHitting(location, child)) {
+          if (child.isMultiChilded) {
+            findTargetAtLocation(child, location,
+                callback: (par) => callback(par));
+          } else {
+            if (child.getChildren().isNotEmpty) {
+              findTargetAtLocation(child, location,
+                  callback: (par) => callback(par));
+            } else {
+              callback(child);
+            }
+          }
+          return;
+        }
+      }
+
       callback(parent);
-    } else {
-      callback(null);
+      return;
     }
   }
 }
