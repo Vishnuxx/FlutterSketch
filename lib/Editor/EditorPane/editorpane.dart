@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/cw_drag_data.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
+
 import 'package:flutteruibuilder/Editor/EditorPane/editor_canvas.dart';
-import 'package:flutteruibuilder/Editor/UIPanels/canvas_panel.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editor_pane_data.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/controls_pane.dart';
 
 import 'package:flutteruibuilder/Editor/EditorPane/widgets_pallette_list.dart';
 import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/palette_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/element_treegraph.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/widgets_panel.dart';
-import 'package:flutteruibuilder/Widgets/column/fs_column.dart';
 
 // ignore: must_be_immutable
 class EditorPane extends StatefulWidget {
@@ -44,13 +41,6 @@ class EditorPane extends StatefulWidget {
     widgets = CWHolder([], _state);
     data = EditorPaneData();
     dropdata = CWDragData();
-  }
-
-  void setState(Function callback) {
-    // ignore: invalid_use_of_protected_member
-    _state.setState(() {
-      callback();
-    });
   }
 
   @override
@@ -91,27 +81,25 @@ class _EditorPaneState extends State<EditorPane> {
           elevation: 1,
           backgroundColor: const Color(0xffffffff),
         ),
-        body: Container(
-          child: Stack(
-            children: [
-              Row(children: [
-                widgetPanel(thispane),
-                graph(thispane),
-                canvasPanel(),
-                controlPane(thispane)
-              ]),
+        body: Stack(
+          children: [
+            Row(children: [
+              widgetPanel(thispane),
+              graph(thispane),
+              canvasPanel(),
+              controlPane(thispane)
+            ]),
 
-              thispane.data.selectionIndicatior,
+            thispane.data.selectionIndicatior,
 
-              SizedBox(
-                  width: 0,
-                  height: 0,
-                  child: Column(
-                    children: thispane.data.hiddenWidgets!.getChildren(),
-                  )), //used to store widgets temporarily
-              thispane.data.shadow
-            ],
-          ),
+            SizedBox(
+                width: 0,
+                height: 0,
+                child: Column(
+                  children: thispane.data.hiddenWidgets!.getChildren(),
+                )), //used to store widgets temporarily
+            thispane.data.shadow
+          ],
         ));
   }
 
@@ -132,7 +120,8 @@ class _EditorPaneState extends State<EditorPane> {
           thispane.data.currentDraggingWidget = null;
         },
         child: Container(
-            child: Center(child: editingDevice()), color: Color(0xffeeeeee)),
+            child: Center(child: editingDevice()),
+            color: const Color(0xffeeeeee)),
       ),
     );
   }
@@ -147,11 +136,15 @@ class _EditorPaneState extends State<EditorPane> {
       EditorCanvas(
         children: thispane.widgets,
       ),
-      true,
+      isDraggableAndSelectable: false,
       key: GlobalKey(),
+      onSelect: (details) {},
+      dragStart: () {},
+      dragMove: (details) {},
+      dragEnd: (details) {},
+      dragCompleted: () {},
     );
 
-    //
     return SizedBox(
       width: EditorPane.SCREEN_W,
       height: EditorPane.SCREEN_H,
@@ -269,6 +262,12 @@ class _EditorPaneState extends State<EditorPane> {
       onDragCompleted: () {
         thispane.data.currentDraggingWidget = canvasWidget(label);
         onDragEnd(true, thispane.data.currentDraggingWidget!);
+        if (thispane.data.currentDroppableWidget != null) {
+          thispane.data.currentDroppableWidget =
+              thispane.data.currentDroppableWidget;
+          thispane.data.currentDroppableWidget
+              ?.addChild(thispane.data.currentDraggingWidget!);
+        }
       },
     );
   }
@@ -281,12 +280,13 @@ class _EditorPaneState extends State<EditorPane> {
     cWidget = CanvasWidget(
       thispane,
       WidgetsPalletteList().generateWidget(type, GlobalKey()),
-      true,
+      isDraggableAndSelectable: true,
       id: newId,
       key: GlobalKey(debugLabel: "vishnu"),
+
       //on element selected
-      onSelect: (tapdetails) {
-        onSelect(tapdetails);
+      onSelect: (TapDownDetails details) {
+        onSelect(details);
       },
 
       //on starting drag
@@ -301,7 +301,15 @@ class _EditorPaneState extends State<EditorPane> {
 
       //onDrop
       dragEnd: (details) {
-        onDragEnd(false, thispane.data.currentDraggingWidget!);
+        final draggingView = thispane.data.currentDraggingWidget;
+        onDragEnd(false, draggingView!);
+        if (thispane.data.currentDroppableWidget != null) {
+          print("deleted");
+
+          draggingView.getParent()?.removeChild(draggingView);
+          thispane.data.currentDroppableWidget?.addChild(draggingView);
+          draggingView.setParent(thispane.data.currentDroppableWidget);
+        }
       },
 
       //onCompleted
@@ -319,44 +327,42 @@ class _EditorPaneState extends State<EditorPane> {
 
   //drag methods
   void onSelect(TapDownDetails details) {
-    thispane.data.isSelected = true;
-    thispane.data.controllers = null;
-    DragUtils.findTargetAtLocation(
-      thispane.root!,
-      details.globalPosition,
-      callback: (parent) {
-        parent?.select(true);
-        // thispane.data.currentDraggingWidget = parent;
-      },
-    );
-    thispane.data.controllers =
-        thispane.data.currentDraggingWidget?.fsWidget?.controllers;
+    thispane.data.currentDroppableWidget?.select(false);
+    thispane.data.currentDraggingWidget?.select(false);
+    DragUtils.findTargetAtLocation(thispane.root!, details.globalPosition,
+        callback: (parent) {
+      print(parent);
+      thispane.data.currentDraggingWidget = parent;
+      thispane.data.currentDraggingWidget?.select(true);
+    });
   }
 
   void onDragStart(bool isFromPallette) {
-    if (isFromPallette) {}
+    if (isFromPallette) {
+    } else {
+     
+    }
   }
 
   void onDragMove(Offset location, bool isFromPallette) {
+    thispane.data.currentDroppableWidget?.select(false);
+    thispane.data.currentDraggingWidget?.select(false);
     DragUtils.findTargetAtLocation(thispane.root!, location,
         callback: (parent) {
+      if (parent!.isViewGroup) {
+        if (parent.isMultiChilded) {
+          thispane.data.currentDroppableWidget = parent;
+          parent.select(true);
+        } else if (parent.getChildren().isEmpty) {
+          thispane.data.currentDroppableWidget = parent;
+          parent.select(true);
+        }
+      }
       thispane.data.currentDroppableWidget = parent;
-      parent?.select(true);
     });
   }
 
   void onDragEnd(bool isFromPallette, CanvasWidget widgetToDrop) {
-    var editorpanedata = thispane.data;
-    if (isFromPallette) {
-      editorpanedata.currentDroppableWidget?.addChild(widgetToDrop);
-      
-
-      editorpanedata.tree?.refresh(thispane.widgets?.getChildren());
-      print(thispane.root?.getChildren());
-      return;
-    }
-    editorpanedata.currentDroppableWidget?.addChild(widgetToDrop);
-    editorpanedata.selectionIndicatior.selectWidget(null);
-    editorpanedata.tree?.refresh(thispane.widgets?.getChildren());
+    thispane.data.currentDroppableWidget?.select(false);
   }
 }

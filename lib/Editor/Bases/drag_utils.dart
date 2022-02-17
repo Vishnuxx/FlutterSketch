@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
-import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
+
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/canvas_panel.dart';
 
@@ -125,31 +125,21 @@ class DragUtils {
       }
 
       List<CanvasWidget> children = parent.getChildren();
-
       if (children.length == 0) {
         callback(parent);
+        print("length is 0");
         return;
       }
 
       for (CanvasWidget child in children) {
         if (isHitting(location, child)) {
-          if (parent.isMultiChilded) {
-            findTargetAtLocation(
-              child,
-              location,
-              callback: (par) {
-                callback(par);
-              },
-            );
+          if (child.isMultiChilded) {
+            findTargetAtLocation(child, location,
+                callback: (par) => callback(par));
           } else {
-            if (parent.fsWidget!.children!.isNotEmpty()) {
-              findTargetAtLocation(
-                parent.fsWidget!.children!.elementAt(0),
-                location,
-                callback: (par) {
-                  callback(par);
-                },
-              );
+            if (child.getChildren().isNotEmpty) {
+              findTargetAtLocation(child, location,
+                  callback: (par) => callback(par));
             } else {
               callback(child);
             }
@@ -157,14 +147,9 @@ class DragUtils {
           return;
         }
       }
-    } else {
-      print(location.toString() +
-          "compares" +
-          ((parent.key as GlobalKey).currentContext?.findRenderObject()
-                  as RenderBox)
-              .localToGlobal(Offset.zero)
-              .toString());
-      callback(null);
+
+      callback(parent);
+      return;
     }
   }
 }

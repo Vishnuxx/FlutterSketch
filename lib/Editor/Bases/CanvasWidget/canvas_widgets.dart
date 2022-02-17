@@ -5,7 +5,6 @@ import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/cw_drag_data.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
-import 'package:flutteruibuilder/Editor/Bases/traversal_data.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 
 // ignore: must_be_immutable
@@ -27,24 +26,26 @@ class CanvasWidget extends StatefulWidget
   final GlobalKey _gkey = GlobalKey();
   bool? isDraggableAndSelectable;
   late FlutterSketchWidget? fsWidget;
-  late void Function(TapDownDetails details)? onSelect;
-  late void Function()? dragStart;
-  late void Function(DragUpdateDetails details)? dragMove;
-  late void Function(DraggableDetails details)? dragEnd;
-  late void Function()? dragCompleted;
+  void Function(TapDownDetails details)? onSelect;
+  void Function()? dragStart;
+  void Function(DragUpdateDetails details)? dragMove;
+  void Function(DraggableDetails details)? dragEnd;
+  void Function()? dragCompleted;
 
   CanvasWidget(
-      this.editor, @required this.fsWidget, this.isDraggableAndSelectable,
-      {Key? key,
-      this.id = "",
-      this.onSelect,
-      this.dragStart,
-      this.dragMove,
-      this.dragEnd,
-      this.dragCompleted})
-      : super(key: key) {
-    this.isViewGroup = this.fsWidget!.isViewGroup!;
-    this.isMultiChilded = this.fsWidget!.isMultiChilded!;
+    this.editor,
+    @required this.fsWidget, {
+    Key? key,
+    this.id = "",
+    this.isDraggableAndSelectable = false,
+    this.onSelect,
+    this.dragStart,
+    this.dragMove,
+    this.dragEnd,
+    this.dragCompleted,
+  }) : super(key: key) {
+    isViewGroup = fsWidget!.isViewGroup!;
+    isMultiChilded = fsWidget!.isMultiChilded!;
   }
 
   @override
@@ -142,9 +143,7 @@ class CanvasWidget extends StatefulWidget
   }
 
   @override
-  void dropTo(CWDragData data, CanvasWidget? dropzone) {
-    
-  }
+  void dropTo(CWDragData data, CanvasWidget? dropzone) {}
 
   //DRAG METHODS
   void pickAndStoreTo(CWHolder temporaryArea) {
@@ -181,6 +180,26 @@ class _CanvasWidgetState extends State<CanvasWidget> {
     return border;
   }
 
+  void _onSelect(TapDownDetails details) {
+    if (widget.onSelect != null) {}
+  }
+
+  void _onDragStart() {
+    if (widget.dragStart != null) {}
+  }
+
+  void _onDragMove(DragUpdateDetails details) {
+    if (widget.dragMove != null) {}
+  }
+
+  void _onDragEnd(DraggableDetails details) {
+    if (widget.dragEnd != null) {}
+  }
+
+  void _onDragCompleted() {
+    if (widget.dragCompleted != null) {}
+  }
+
   //BUILD
   @override
   Widget build(BuildContext context) {
@@ -188,24 +207,21 @@ class _CanvasWidgetState extends State<CanvasWidget> {
       return Draggable(
         key: widget._gkey,
         child: GestureDetector(
-            child: Container(
-              child: IgnorePointer(child: widget.fsWidget!),
-              foregroundDecoration:
-                  BoxDecoration(border: _borderAndWireframe()),
-            ),
-            //on Tap
-            onTapDown: (TapDownDetails details) {
-              widget.onSelect!(details);
-            }),
-        feedback: Container(),
+          child: Container(
+            child: IgnorePointer(child: widget.fsWidget!),
+            foregroundDecoration: BoxDecoration(border: _borderAndWireframe()),
+          ),
+          onTapDown: (details) {
+            widget.onSelect!(details);
+          },
+        ),
+        feedback: Container(width: 100, height: 30 , child: Center(child: Text(widget.fsWidget.runtimeType.toString() , style: TextStyle(fontSize: 10),)), decoration: BoxDecoration(color: Colors.white60 , border: Border.all(color: Colors.black26)),),
         //start
         onDragStarted: () {
-          view?.onDragStart();
           widget.dragStart!();
         },
         //update
         onDragUpdate: (details) {
-          view?.onDragMove();
           widget.dragMove!(details);
         },
         //end
@@ -213,7 +229,9 @@ class _CanvasWidgetState extends State<CanvasWidget> {
           widget.dragEnd!(drggableDetails);
         },
         //co,pleted
-        onDragCompleted: widget.dragCompleted,
+        onDragCompleted: () {
+          widget.dragCompleted!();
+        },
       );
     } else {
       return Container(child: widget.fsWidget!);

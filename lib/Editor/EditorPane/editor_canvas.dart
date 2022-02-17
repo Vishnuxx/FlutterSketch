@@ -16,10 +16,10 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
   String? id;
 
   @override
-  bool? isMultiChilded;
+  bool? isMultiChilded = true;
 
   @override
-  bool? isViewGroup;
+  bool? isViewGroup = true;
 
   @override
   CWHolder? children;

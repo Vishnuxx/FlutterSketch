@@ -70,5 +70,6 @@ class WidgetsPalletteList {
       default:
         break;
     }
+    return null;
   }
 }
