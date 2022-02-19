@@ -4,6 +4,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutteruibuilder/Widgets/Wrap/fs_wrap.dart';
 import 'package:flutteruibuilder/Widgets/column/fs_column.dart';
 import 'package:flutteruibuilder/Widgets/container/fs_container.dart';
 import 'package:flutteruibuilder/Widgets/iconbutton/fs_iconbutton.dart';
@@ -65,6 +66,11 @@ class WidgetsPalletteList {
         return FSStack(
           key: key,
       
+        );
+
+      case "Wrap":
+        return FSWrap(
+          key: key,
         );
 
       default:

@@ -12,29 +12,38 @@ class CWHolder {
   CWHolder(this._list, this._state);
 
 
-  void add(CanvasWidget widget) {
+  void add(CanvasWidget? widget) {
     // ignore: invalid_use_of_protected_member
-    _state.setState(() {
-      _list.add(widget);
-    });
+    if(widget != null) {
+      _state.setState(() {
+        _list.add(widget);
+      });
+    }
+   
   }
 
 
-  void remove(CanvasWidget widget) {
+  void remove(CanvasWidget? widget) {
     // ignore: invalid_use_of_protected_member
-    _state.setState(() {
-      _list.remove(widget);
-      // ignore: avoid_print
-      print(_state);
-    });
+     if (widget != null) {
+        _state.setState(() {
+        _list.remove(widget);
+        // ignore: avoid_print
+        print(_state);
+      });
+     }
+   
   }
 
 
-  void insert(int index, CanvasWidget widget) {
+  void insert(int index, CanvasWidget? widget) {
     // ignore: invalid_use_of_protected_member
-    _state.setState(() {
-      _list.insert(index, widget);
-    });
+     if (widget != null) {
+        _state.setState(() {
+        _list.insert(index, widget);
+      });
+     }
+   
   }
 
 

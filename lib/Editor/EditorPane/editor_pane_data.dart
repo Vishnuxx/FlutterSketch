@@ -5,13 +5,13 @@ import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/selection_label.dart';
 import 'package:flutteruibuilder/Editor/UIPanels/element_treegraph.dart';
 
 class EditorPaneData {
-
-
-  List<CanvasWidget> collections = [];
-  SelectionIndicatior selectionIndicatior = SelectionIndicatior();
+  final List<CanvasWidget> collections = [];
+  final selectionIndicatior = SelectionIndicatior();
+  final selectionLabel = SelectionLabel();
 
   CanvasWidget? currentDroppableWidget;
   CanvasWidget? currentDraggingWidget;
@@ -21,8 +21,7 @@ class EditorPaneData {
 
   CWHolder? hiddenWidgets;
   List<WidgetController>? controllers = [];
-  DragShadow shadow = DragShadow();
-
+  final DragShadow shadow = DragShadow();
 
   ElementTreeGraph? tree;
 }

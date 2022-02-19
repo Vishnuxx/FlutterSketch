@@ -30,6 +30,11 @@ class DragUtils {
     return collide;
   }
 
+static Offset toRelativeOffset(Offset offset) {
+    final mOff = (EditorPane.editorpanecontext?.findRenderObject() as RenderBox)
+        .localToGlobal(Offset.zero);
+    return offset.translate(-mOff.dx, -mOff.dy);
+  }
   // static void findWidgetsAt(
   //     CWHolder parentlist,
   //     bool isForSelection,

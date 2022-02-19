@@ -13,6 +13,7 @@ class CanvasWidget extends StatefulWidget
   final _CanvasWidgetState _state = _CanvasWidgetState();
   bool _isSelected = false;
   bool _wireframe = true;
+  bool _isVisible = true;
   late final bool isViewGroup;
   late final bool isMultiChilded;
 
@@ -64,6 +65,18 @@ class CanvasWidget extends StatefulWidget
     _state.setState(() {
       _wireframe = value;
     });
+  }
+
+  @override
+  void setVisible(bool visibility) {
+    _state.setState(() {
+      _isVisible = visibility;
+    });
+  }
+
+  @override
+  bool isVisible() {
+    return _isVisible;
   }
 
   @override
@@ -203,38 +216,58 @@ class _CanvasWidgetState extends State<CanvasWidget> {
   //BUILD
   @override
   Widget build(BuildContext context) {
-    if (widget.isDraggableAndSelectable!) {
-      return Draggable(
-        key: widget._gkey,
-        child: GestureDetector(
-          child: Container(
-            child: IgnorePointer(child: widget.fsWidget!),
-            foregroundDecoration: BoxDecoration(border: _borderAndWireframe()),
+      if (widget.isDraggableAndSelectable!) {
+        return Visibility(
+          visible: widget._isVisible,
+          maintainState: true,
+          child: Draggable(
+            key: widget._gkey,
+            child: GestureDetector(
+              child: Wrap(
+                children: [
+                  Container(
+                    child: IgnorePointer(child: widget.fsWidget!),
+                    foregroundDecoration:
+                        BoxDecoration(border: _borderAndWireframe()),
+                  ),
+                ],
+              ),
+              onTapDown: (details) {
+                widget.onSelect!(details);
+              },
+            ),
+            feedback: Container(
+              width: 100,
+              height: 30,
+              child: Center(
+                  child: Text(
+                widget.fsWidget.runtimeType.toString(),
+                style: TextStyle(fontSize: 10),
+              )),
+              decoration: BoxDecoration(
+                  color: Colors.white60,
+                  border: Border.all(color: Colors.black26)),
+            ),
+            //start
+            onDragStarted: () {
+              widget.dragStart!();
+            },
+            //update
+            onDragUpdate: (details) {
+              widget.dragMove!(details);
+            },
+            //end
+            onDragEnd: (drggableDetails) {
+              widget.dragEnd!(drggableDetails);
+            },
+            //co,pleted
+            onDragCompleted: () {
+              widget.dragCompleted!();
+            },
           ),
-          onTapDown: (details) {
-            widget.onSelect!(details);
-          },
-        ),
-        feedback: Container(width: 100, height: 30 , child: Center(child: Text(widget.fsWidget.runtimeType.toString() , style: TextStyle(fontSize: 10),)), decoration: BoxDecoration(color: Colors.white60 , border: Border.all(color: Colors.black26)),),
-        //start
-        onDragStarted: () {
-          widget.dragStart!();
-        },
-        //update
-        onDragUpdate: (details) {
-          widget.dragMove!(details);
-        },
-        //end
-        onDragEnd: (drggableDetails) {
-          widget.dragEnd!(drggableDetails);
-        },
-        //co,pleted
-        onDragCompleted: () {
-          widget.dragCompleted!();
-        },
-      );
-    } else {
-      return Container(child: widget.fsWidget!);
+        );
+      } else {
+        return Container(child: widget.fsWidget!);
     }
   }
 }

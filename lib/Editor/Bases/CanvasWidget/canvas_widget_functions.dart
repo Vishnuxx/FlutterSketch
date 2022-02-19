@@ -8,6 +8,8 @@ abstract class CanvasWidgetFunctions {
 
   void select(bool isSelected);
   // void unselect();
+  void setVisible(bool visibility);
+  bool isVisible();
 
   void showWireframe(bool value);
 

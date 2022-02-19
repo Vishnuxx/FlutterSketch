@@ -18,6 +18,7 @@ import 'package:flutteruibuilder/Editor/UIPanels/widgets_panel.dart';
 class EditorPane extends StatefulWidget {
   final _state = _EditorPaneState();
 
+  static BuildContext? editorpanecontext = null;
   // ignore: constant_identifier_names
   static const double WIDGETS_PANEL_W = 250;
   // ignore: constant_identifier_names
@@ -41,6 +42,7 @@ class EditorPane extends StatefulWidget {
     widgets = CWHolder([], _state);
     data = EditorPaneData();
     dropdata = CWDragData();
+    data.hiddenWidgets = CWHolder([], _state);
   }
 
   @override
@@ -59,7 +61,6 @@ class _EditorPaneState extends State<EditorPane> {
     super.initState();
     thispane = widget;
 
-    thispane.data.hiddenWidgets = CWHolder([], this);
     thispane.data.tree = ElementTreeGraph(
       width: 200,
       onWidgetSelected: (wid) {
@@ -70,6 +71,7 @@ class _EditorPaneState extends State<EditorPane> {
 
   @override
   Widget build(BuildContext context) {
+    EditorPane.editorpanecontext = context;
     return Scaffold(
         appBar: AppBar(
           centerTitle: false,
@@ -91,13 +93,11 @@ class _EditorPaneState extends State<EditorPane> {
             ]),
 
             thispane.data.selectionIndicatior,
+            thispane.data.selectionLabel,
 
-            SizedBox(
-                width: 0,
-                height: 0,
-                child: Column(
-                  children: thispane.data.hiddenWidgets!.getChildren(),
-                )), //used to store widgets temporarily
+            Column(
+              children: thispane.data.hiddenWidgets!.getChildren(),
+            ), //used to store widgets temporarily
             thispane.data.shadow
           ],
         ));
@@ -113,14 +113,24 @@ class _EditorPaneState extends State<EditorPane> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          setState(() {
-            thispane.data.controllers = null;
-          });
+          // setState(() {
+          //   thispane.data.selectionLabel.setLabelOf(null);
+          //   thispane.data.controllers = null;
+          // });
 
-          thispane.data.currentDraggingWidget = null;
+          select(thispane.data.currentDraggingWidget!, false);
         },
         child: Container(
-            child: Center(child: editingDevice()),
+            child: Stack(
+              alignment: Alignment.bottomLeft,
+              children: [
+                Center(child: editingDevice()),
+                Icon(
+                  Icons.delete,
+                  size: 50,
+                )
+              ],
+            ),
             color: const Color(0xffeeeeee)),
       ),
     );
@@ -145,6 +155,7 @@ class _EditorPaneState extends State<EditorPane> {
       dragCompleted: () {},
     );
 
+    thispane.widgets?.insert(0, thispane.root!);
     return SizedBox(
       width: EditorPane.SCREEN_W,
       height: EditorPane.SCREEN_H,
@@ -154,7 +165,7 @@ class _EditorPaneState extends State<EditorPane> {
         ),
         body: DragTarget(
           builder: (context, candidateData, rejectedData) {
-            return thispane.root!;
+            return thispane.widgets?.elementAt(0) as Widget;
           },
         ),
       ),
@@ -198,7 +209,7 @@ class _EditorPaneState extends State<EditorPane> {
 
   //widget panel
   Widget widgetPanel(EditorPane editor) {
-    thispane.root?.select(true);
+    //select(thispane.root , true);
     return WidgetPanel(
       EditorPane.WIDGETS_PANEL_W,
       children: [
@@ -302,14 +313,19 @@ class _EditorPaneState extends State<EditorPane> {
       //onDrop
       dragEnd: (details) {
         final draggingView = thispane.data.currentDraggingWidget;
+        final droppingWid = thispane.data.currentDroppableWidget;
         onDragEnd(false, draggingView!);
         if (thispane.data.currentDroppableWidget != null) {
           print("deleted");
 
-          draggingView.getParent()?.removeChild(draggingView);
-          thispane.data.currentDroppableWidget?.addChild(draggingView);
-          draggingView.setParent(thispane.data.currentDroppableWidget);
+          // draggingView.getParent()?.removeChild(draggingView);
+          // thispane.data.currentDroppableWidget?.addChild(draggingView);
+          // draggingView.setParent(thispane.data.currentDroppableWidget);
+
+          // thispane.data.hiddenWidgets?.remove(draggingView);
+          // droppingWid?.addChild(draggingView);
         }
+        thispane.data.currentDraggingWidget?.setVisible(true);
       },
 
       //onCompleted
@@ -327,35 +343,41 @@ class _EditorPaneState extends State<EditorPane> {
 
   //drag methods
   void onSelect(TapDownDetails details) {
-    thispane.data.currentDroppableWidget?.select(false);
-    thispane.data.currentDraggingWidget?.select(false);
+    select(thispane.data.currentDroppableWidget!, false);
+    select(thispane.data.currentDraggingWidget!, false);
+
     DragUtils.findTargetAtLocation(thispane.root!, details.globalPosition,
         callback: (parent) {
-      print(parent);
+      thispane.data.selectionLabel.setLabelOf(parent!);
       thispane.data.currentDraggingWidget = parent;
-      thispane.data.currentDraggingWidget?.select(true);
+      select(thispane.data.currentDraggingWidget!, true);
     });
   }
 
   void onDragStart(bool isFromPallette) {
+    final draggingWid = thispane.data.currentDraggingWidget;
+    final droppingWid = thispane.data.currentDroppableWidget;
+
     if (isFromPallette) {
     } else {
-     
+      //draggingWid?.setVisible(false);
+      thispane.data.hiddenWidgets
+          ?.add(draggingWid?.getParent()?.removeChild(draggingWid));
     }
   }
 
   void onDragMove(Offset location, bool isFromPallette) {
-    thispane.data.currentDroppableWidget?.select(false);
-    thispane.data.currentDraggingWidget?.select(false);
-    DragUtils.findTargetAtLocation(thispane.root!, location,
+    select(thispane.data.currentDroppableWidget, false);
+    select(thispane.data.currentDraggingWidget, false);
+    DragUtils.findTargetAtLocation(thispane.widgets!.elementAt(0) , location,
         callback: (parent) {
       if (parent!.isViewGroup) {
         if (parent.isMultiChilded) {
           thispane.data.currentDroppableWidget = parent;
-          parent.select(true);
+          select(parent, true);
         } else if (parent.getChildren().isEmpty) {
           thispane.data.currentDroppableWidget = parent;
-          parent.select(true);
+          select(parent, true);
         }
       }
       thispane.data.currentDroppableWidget = parent;
@@ -363,6 +385,18 @@ class _EditorPaneState extends State<EditorPane> {
   }
 
   void onDragEnd(bool isFromPallette, CanvasWidget widgetToDrop) {
-    thispane.data.currentDroppableWidget?.select(false);
+    select(thispane.data.currentDroppableWidget!, false);
+  }
+
+//used to indicate selectionLabel
+  void select(CanvasWidget? widget, bool selected) {
+    if (widget != null) {
+      if (!selected) {
+        widget.select(false);
+        thispane.data.selectionLabel.setLabelOf(null);
+        return;
+      }
+      widget.select(selected);
+    }
   }
 }
