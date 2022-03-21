@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 import 'package:flutteruibuilder/editor_screen.dart';
 import 'package:flutteruibuilder/first.dart';
 import 'package:flutteruibuilder/third.dart';
@@ -16,11 +15,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        navigatorKey: MyApp.navigatorKey,
-        initialRoute: "first",
+        initialRoute: "/",
         routes: {
+          "/": (context) => const EditorScreen(),
           "first": (context) => const First(),
-          "editor": (context) => const EditorScreen(),
           "third": (context) => const Third(),
         },
         title: 'Flutter Demo',

@@ -11,7 +11,7 @@ class First extends StatelessWidget {
           ElevatedButton(
               child: Text("GO to Editor"),
               onPressed: () {
-                Navigator.pushNamed(context, "/editor");
+               
                 // navigatorKey.currentState?.push(
                 //   MaterialPageRoute(builder: (context) => const EditorScreen()),
                 // );

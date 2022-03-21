@@ -284,8 +284,8 @@ class _EditorPaneState extends State<EditorPane> {
         if (thispane.data.currentDroppableWidget != null) {
           thispane.data.currentDroppableWidget
               ?.addChild(thispane.data.currentDraggingWidget!);
-             
         }
+        thispane.data.tree?.refresh(thispane.root?.getChildren());
       },
     );
   }
@@ -328,6 +328,7 @@ class _EditorPaneState extends State<EditorPane> {
       //onDrop
       dragEnd: (details) {
         onDragEnd(false, thispane.data.currentDroppableWidget!);
+         thispane.data.tree?.refresh(thispane.root?.getChildren());
       },
 
       //onCompleted
@@ -394,13 +395,11 @@ class _EditorPaneState extends State<EditorPane> {
 
     select(droppingWid!, false);
     if (droppingWid != null && draggingView != null) {
-      if(!droppingWid.isViewGroup) {
-        
+      if (!droppingWid.isViewGroup) {
       } else {
         droppingWid.addChild(draggingView);
         draggingView.setParent(droppingWid);
       }
-      
     }
 
     select(draggingView, true);
