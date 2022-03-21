@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
-import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/WidgetController/widget_controller.dart';
 
 class FSWrapController {
   static List<WidgetController> getControllers(FlutterSketchWidget widget) {

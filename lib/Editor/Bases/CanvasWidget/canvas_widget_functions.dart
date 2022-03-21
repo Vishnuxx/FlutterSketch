@@ -1,12 +1,14 @@
 // ignore: file_names
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/cw_drag_data.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
 
 abstract class CanvasWidgetFunctions {
   late String id;
   final Map<String, dynamic> _props = {};
 
   void select(bool isSelected);
+  void update();
   // void unselect();
   void setVisible(bool visibility);
   bool isVisible();
@@ -25,4 +27,9 @@ abstract class CanvasWidgetFunctions {
   CanvasWidget? getParent();
 
   FlutterSketchWidget getFSWidget();
+
+  CWDragData? pickUp(
+      CanvasWidget
+          canvas); //picks up the canvas widget and returns its old parent
+  void dropTo(CWDragData data, CanvasWidget dropzone);
 }

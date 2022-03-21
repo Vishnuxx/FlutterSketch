@@ -8,7 +8,7 @@ import 'package:flutteruibuilder/Widgets/Wrap/fs_wrap.dart';
 import 'package:flutteruibuilder/Widgets/column/fs_column.dart';
 import 'package:flutteruibuilder/Widgets/container/fs_container.dart';
 import 'package:flutteruibuilder/Widgets/iconbutton/fs_iconbutton.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Widgets/row/fs_row.dart';
 import 'package:flutteruibuilder/Widgets/stack/fs_stack.dart';
 import 'package:flutteruibuilder/Widgets/text/fs_text.dart';

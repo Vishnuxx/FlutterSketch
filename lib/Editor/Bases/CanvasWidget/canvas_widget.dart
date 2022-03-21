@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget_drag_methods.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget_functions.dart';
 import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/cw_drag_data.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 
 // ignore: must_be_immutable
-class CanvasWidget extends StatefulWidget
-    implements CanvasWidgetFunctions, CWDragMethods {
+class CanvasWidget extends StatefulWidget implements CanvasWidgetFunctions {
   final _CanvasWidgetState _state = _CanvasWidgetState();
   bool _isSelected = false;
   bool _wireframe = true;
@@ -56,6 +53,11 @@ class CanvasWidget extends StatefulWidget
     _state.setState(() {
       _isSelected = isSelected;
     });
+  }
+
+  @override
+  void update() {
+   
   }
 
   @override
@@ -114,6 +116,7 @@ class CanvasWidget extends StatefulWidget
     } else {
       child.getParent()!.removeChild(child);
       fsWidget!.children!.add(child);
+      child.setParent(this);
     }
   }
 
@@ -123,8 +126,8 @@ class CanvasWidget extends StatefulWidget
     if (!fsWidget!.isViewGroup!) {
       throw "This widget is not a viewgroup";
     }
-    fsWidget?.children?.remove(child);
     child.setParent(null);
+    fsWidget?.children?.remove(child);
     return child;
   }
 
@@ -193,81 +196,57 @@ class _CanvasWidgetState extends State<CanvasWidget> {
     return border;
   }
 
-  void _onSelect(TapDownDetails details) {
-    if (widget.onSelect != null) {}
-  }
-
-  void _onDragStart() {
-    if (widget.dragStart != null) {}
-  }
-
-  void _onDragMove(DragUpdateDetails details) {
-    if (widget.dragMove != null) {}
-  }
-
-  void _onDragEnd(DraggableDetails details) {
-    if (widget.dragEnd != null) {}
-  }
-
-  void _onDragCompleted() {
-    if (widget.dragCompleted != null) {}
-  }
-
   //BUILD
   @override
   Widget build(BuildContext context) {
-      if (widget.isDraggableAndSelectable!) {
-        return Visibility(
-          visible: widget._isVisible,
-          maintainState: true,
-          child: Draggable(
-            key: widget._gkey,
-            child: GestureDetector(
-              child: Wrap(
-                children: [
-                  Container(
-                    child: IgnorePointer(child: widget.fsWidget!),
-                    foregroundDecoration:
-                        BoxDecoration(border: _borderAndWireframe()),
-                  ),
-                ],
-              ),
-              onTapDown: (details) {
-                widget.onSelect!(details);
-              },
+    if (widget.isDraggableAndSelectable!) {
+      return Visibility(
+        visible: widget._isVisible,
+        maintainState: true,
+        child: Draggable(
+          key: widget._gkey,
+          child: GestureDetector(
+            child: Container(
+              child: IgnorePointer(child: widget.fsWidget!),
+              foregroundDecoration:
+                  BoxDecoration(border: _borderAndWireframe()),
             ),
-            feedback: Container(
-              width: 100,
-              height: 30,
-              child: Center(
-                  child: Text(
-                widget.fsWidget.runtimeType.toString(),
-                style: TextStyle(fontSize: 10),
-              )),
-              decoration: BoxDecoration(
-                  color: Colors.white60,
-                  border: Border.all(color: Colors.black26)),
-            ),
-            //start
-            onDragStarted: () {
-              widget.dragStart!();
-            },
-            //update
-            onDragUpdate: (details) {
-              widget.dragMove!(details);
-            },
-            //end
-            onDragEnd: (drggableDetails) {
-              widget.dragEnd!(drggableDetails);
-            },
-            //co,pleted
-            onDragCompleted: () {
-              widget.dragCompleted!();
+            onTapDown: (details) {
+              widget.onSelect!(details);
             },
           ),
-        );
-      } else {
-        return Container(child: widget.fsWidget!);
+          feedback: Container(
+            width: 100,
+            height: 30,
+            child: Center(
+                child: Text(
+              widget.fsWidget.runtimeType.toString(),
+              style: TextStyle(fontSize: 10),
+            )),
+            decoration: BoxDecoration(
+                color: Colors.white60,
+                border: Border.all(color: Colors.black26)),
+          ),
+          //start
+          onDragStarted: () {
+            widget.dragStart!();
+          },
+          //update
+          onDragUpdate: (details) {
+            widget.dragMove!(details);
+          },
+          //end
+          onDragEnd: (drggableDetails) {
+            widget.dragEnd!(drggableDetails);
+          },
+          //co,pleted
+          onDragCompleted: () {
+            widget.dragCompleted!();
+          },
+        ),
+      );
+    } else {
+      return Container(child: widget.fsWidget!);
     }
   }
 }

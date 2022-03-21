@@ -4,8 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
-import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/WidgetController/widget_controller.dart';
 
 // ignore: must_be_immutable
 class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
@@ -87,7 +87,7 @@ class EditorCanvas extends StatefulWidget implements FlutterSketchWidget {
 class _EditorCanvasState extends State<EditorCanvas> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: double.infinity,
       width: double.infinity,
 

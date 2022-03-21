@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/drag_utils.dart';
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
 

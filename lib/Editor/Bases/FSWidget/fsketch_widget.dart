@@ -6,9 +6,9 @@ that are being drawn  in the canvas
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fs_drag_events.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fs_drag_events.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/Bases/WidgetController/widget_controller.dart';
 
 // ignore: must_be_immutable
 abstract class FlutterSketchWidget extends Widget implements FSDragEvents {
@@ -27,6 +27,7 @@ abstract class FlutterSketchWidget extends Widget implements FSDragEvents {
       dynamic
           value); //used to access and edit properties of the widget in realtime
 
+  
   List<WidgetController>?
       controllers; //widgets to display and edit the properties
 

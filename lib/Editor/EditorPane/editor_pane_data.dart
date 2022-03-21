@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
 
-import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/drag_shadow.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/selection_indicator.dart';
-import 'package:flutteruibuilder/Editor/EditorPane/selection_label.dart';
-import 'package:flutteruibuilder/Editor/UIPanels/element_treegraph.dart';
+import 'package:flutteruibuilder/Editor/Bases/WidgetController/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/components/drag_shadow.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/components/selection_indicator.dart';
+import 'package:flutteruibuilder/Editor/EditorPane/components/selection_label.dart';
+import 'package:flutteruibuilder/Editor/EditorUIPanels/element_treegraph.dart';
 
 class EditorPaneData {
   final List<CanvasWidget> collections = [];

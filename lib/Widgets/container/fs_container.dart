@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
-import 'package:flutteruibuilder/Editor/Bases/widget_controller.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/WidgetController/widget_controller.dart';
 import 'package:flutteruibuilder/Widgets/container/fs_container_controller.dart';
 
 // ignore: must_be_immutable

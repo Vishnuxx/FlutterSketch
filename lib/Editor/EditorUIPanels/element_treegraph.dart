@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget.dart';
 
 // ignore: must_be_immutable
 class ElementTreeGraph extends StatefulWidget {

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class PaletteWidget extends StatelessWidget {
+
   late String path = "/pallette_icons/icon1.png";
   late String label ;
   late bool isDraggable;
@@ -30,11 +31,7 @@ class PaletteWidget extends StatelessWidget {
       return Draggable(
         child: getWidget(),
         feedback: getWidget(),
-        // Container(
-        //   height: 40,
-        //   width: 200,
-        //   color: Colors.amber,
-        // ),
+       
        onDragStarted: onDragStart,
        onDragUpdate: onDragMove,
        onDragCompleted: onDragCompleted ,
@@ -51,10 +48,6 @@ class PaletteWidget extends StatelessWidget {
       height: 50.0,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          // border: Border.all(
-          //   color: Colors.black12,
-          //   width: 1,
-          // ),
        ),
       clipBehavior: Clip.hardEdge,
       child: Column(

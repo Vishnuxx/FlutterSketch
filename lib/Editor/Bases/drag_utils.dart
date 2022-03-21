@@ -1,12 +1,12 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget.dart';
 import 'package:flutteruibuilder/Editor/Bases/cw_holder.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/fsketch_widget.dart';
+import 'package:flutteruibuilder/Editor/Bases/FSWidget/fsketch_widget.dart';
 
 import 'package:flutteruibuilder/Editor/EditorPane/editorpane.dart';
-import 'package:flutteruibuilder/Editor/UIPanels/canvas_panel.dart';
+import 'package:flutteruibuilder/Editor/EditorUIPanels/canvas_panel.dart';
 
 class DragUtils {
   // static Offset toRelativeOffset(Offset offset) {
@@ -30,7 +30,7 @@ class DragUtils {
     return collide;
   }
 
-static Offset toRelativeOffset(Offset offset) {
+  static Offset toRelativeOffset(Offset offset) {
     final mOff = (EditorPane.editorpanecontext?.findRenderObject() as RenderBox)
         .localToGlobal(Offset.zero);
     return offset.translate(-mOff.dx, -mOff.dy);
@@ -121,29 +121,35 @@ static Offset toRelativeOffset(Offset offset) {
   //   }
   // }
 
-  static void findTargetAtLocation(CanvasWidget parent, Offset location,
+  static void findTargetAtLocation(CanvasWidget parent, String eventType,
+      Offset location, CanvasWidget? draggingWidget,
       {required void Function(CanvasWidget? parent) callback}) {
     if (isHitting(location, parent)) {
+     
       if (!parent.isViewGroup) {
         callback(parent);
         return;
       }
-
       List<CanvasWidget> children = parent.getChildren();
       if (children.length == 0) {
         callback(parent);
-        print("length is 0");
         return;
       }
 
       for (CanvasWidget child in children) {
-        if (isHitting(location, child)) {
+        if (draggingWidget != null &&
+            eventType == "dragevent" &&
+            child == draggingWidget) {
+          continue;
+        }
+       
+        if (isHitting(location, child)) { 
           if (child.isMultiChilded) {
-            findTargetAtLocation(child, location,
+            findTargetAtLocation(child, eventType, location, draggingWidget,
                 callback: (par) => callback(par));
           } else {
             if (child.getChildren().isNotEmpty) {
-              findTargetAtLocation(child, location,
+              findTargetAtLocation(child.getChildren().elementAt(0) , eventType, location, draggingWidget,
                   callback: (par) => callback(par));
             } else {
               callback(child);
@@ -151,6 +157,7 @@ static Offset toRelativeOffset(Offset offset) {
           }
           return;
         }
+         child.select(false);
       }
 
       callback(parent);

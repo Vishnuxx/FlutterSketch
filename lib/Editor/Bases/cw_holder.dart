@@ -1,7 +1,7 @@
 /* A special kind of List<CanvasWidget> used to store canvas widgets and update the state on list operations*/
 
 import 'package:flutter/material.dart';
-import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widgets.dart';
+import 'package:flutteruibuilder/Editor/Bases/CanvasWidget/canvas_widget.dart';
 
 class CWHolder {
   
@@ -28,8 +28,8 @@ class CWHolder {
      if (widget != null) {
         _state.setState(() {
         _list.remove(widget);
-        // ignore: avoid_print
-        print(_state);
+        
+        
       });
      }
    
@@ -48,8 +48,8 @@ class CWHolder {
 
 
   void show() {
-    // ignore: avoid_print
-    print(_state);
+   
+   
   }
 
 
